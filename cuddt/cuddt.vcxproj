@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="cudd 3.0|Win32">
+      <Configuration>cudd 3.0</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="cudd 3.0|x64">
+      <Configuration>cudd 3.0</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>cuddt</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>cudd 3.0.0</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetExt>.dll</TargetExt>
+    <TargetName>cudd</TargetName>
+    <IncludePath>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|x64'">
+    <TargetExt>.dll</TargetExt>
+    <TargetName>cudd</TargetName>
+    <IncludePath>C:\Program Files\Java\jdk1.8.0_131\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files\Java\jdk1.8.0_102\include\win32;$(IncludePath)</IncludePath>
+    <TargetExt>.dll</TargetExt>
+    <TargetName>cudd</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;$(SolutionDir)\cuddf-s\epd;$(SolutionDir)\cuddf-s\cudd;$(SolutionDir)\cuddf-s\mtr;$(SolutionDir)\cuddf-s\st;$(SolutionDir)\cuddf-s\util;$(JAVA_HOME)\include\win32;$(JAVA_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>D_STATS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;$(JAVA_HOME)\include\win32;$(JAVA_HOME)\include;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>false</ExceptionHandling>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;$(SolutionDir)\cuddf-s\epd;$(SolutionDir)\cuddf-s\cudd;$(SolutionDir)\cuddf-s\mtr;$(SolutionDir)\cuddf-s\st;$(SolutionDir)\cuddf-s\util;$(JAVA_HOME)\include\win32;$(JAVA_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddAbs.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddApply.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddFind.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddInv.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddIte.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddNeg.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAddWalsh.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAndAbs.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAnneal.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddApa.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAPI.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddApprox.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddBddAbs.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddBddCorr.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddBddIte.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddBridge.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddCache.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddCheck.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddClip.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddCof.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddCompose.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddDecomp.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddEssent.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddExact.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddExport.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddGenCof.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddGenetic.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddGroup.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddHarwell.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddInit.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddInteract.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddLCache.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddLevelQ.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddLinear.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddLiteral.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddMatMult.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddPriority.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddRead.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddRef.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddReorder.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSat.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSign.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSolve.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSplit.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSubsetHB.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSubsetSP.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddSymmetry.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddTable.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddUtil.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddWindow.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddCount.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddFuncs.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddGroup.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddIsop.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddLin.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddMisc.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddPort.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddReord.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddSetop.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddSymm.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddZddUtil.c" />
+    <ClCompile Include="..\cuddf-s\cudd_jni.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpBinary.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpConvert.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpDbg.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpLoad.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpLoadCnf.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpNodeAdd.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpNodeBdd.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpNodeCnf.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpStoreAdd.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpStoreBdd.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpStoreCnf.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpStoreMisc.c" />
+    <ClCompile Include="..\cuddf-s\dddmp\dddmpUtil.c" />
+    <ClCompile Include="..\cuddf-s\epd\epd.c" />
+    <ClCompile Include="..\cuddf-s\mtr\mtrBasic.c" />
+    <ClCompile Include="..\cuddf-s\mtr\mtrGroup.c" />
+    <ClCompile Include="..\cuddf-s\st\st.c" />
+    <ClCompile Include="..\cuddf-s\synt\gr1_game.c" />
+    <ClCompile Include="..\cuddf-s\synt\rabin_game.c" />
+    <ClCompile Include="..\cuddf-s\synt\synt.c" />
+    <ClCompile Include="..\cuddf-s\util\cpu_stats.c" />
+    <ClCompile Include="..\cuddf-s\util\cpu_time.c" />
+    <ClCompile Include="..\cuddf-s\util\cstringstream.c" />
+    <ClCompile Include="..\cuddf-s\util\datalimit.c" />
+    <ClCompile Include="..\cuddf-s\util\pathsearch.c" />
+    <ClCompile Include="..\cuddf-s\util\pipefork.c" />
+    <ClCompile Include="..\cuddf-s\util\prtime.c" />
+    <ClCompile Include="..\cuddf-s\util\safe_mem.c" />
+    <ClCompile Include="..\cuddf-s\util\strsav.c" />
+    <ClCompile Include="..\cuddf-s\util\texpand.c" />
+    <ClCompile Include="..\cuddf-s\util\ucbqsort.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\cuddf-s\config.h" />
+    <ClInclude Include="..\cuddf-s\cudd\cudd.h" />
+    <ClInclude Include="..\cuddf-s\cudd\cuddInt.h" />
+    <ClInclude Include="..\cuddf-s\cudd_jni.h" />
+    <ClInclude Include="..\cuddf-s\dddmp\dddmp.h" />
+    <ClInclude Include="..\cuddf-s\dddmp\dddmpInt.h" />
+    <ClInclude Include="..\cuddf-s\epd\epd.h" />
+    <ClInclude Include="..\cuddf-s\epd\epdInt.h" />
+    <ClInclude Include="..\cuddf-s\mtr\mtr.h" />
+    <ClInclude Include="..\cuddf-s\mtr\mtrInt.h" />
+    <ClInclude Include="..\cuddf-s\nanotrav\bnet.h" />
+    <ClInclude Include="..\cuddf-s\nanotrav\ntr.h" />
+    <ClInclude Include="..\cuddf-s\st\st.h" />
+    <ClInclude Include="..\cuddf-s\synt\synt.h" />
+    <ClInclude Include="..\cuddf-s\util\cstringstream.h" />
+    <ClInclude Include="..\cuddf-s\util\util.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
