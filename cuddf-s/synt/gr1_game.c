@@ -82,7 +82,7 @@ void free_gr1_mem()
 /*
 * The set of states from which the system can force the environment to reach a state in "to".
 */
-DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, boolean sca)
+DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
 {
 	DdNode* statesSysTransTo;
 	
@@ -117,7 +117,7 @@ DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, 
 	return yieldStates;
 }
 
-DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, boolean sca)
+DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
 {
 	int n;
 	unsigned int *arr;
@@ -195,7 +195,7 @@ DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairin
 	}
 
 	//DdNode* yieldStates2 = yield2(to, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans);
-	//boolean isYieldStatesEq = IS_BDD_EQ(yieldStates, yieldStates2);
+	//int isYieldStatesEq = IS_BDD_EQ(yieldStates, yieldStates2);
 	////printf("isYieldStatesEq = %d (true = %d, false = %d)\n", isYieldStatesEq, true, false);
 	//fflush(stdout);
 	//Cudd_RecursiveDeref(manager, yieldStates2);
@@ -205,7 +205,7 @@ DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairin
 /*
 * Check whether the system player wins from all initial states if winSys are its winning states
 */
-boolean sysWinAllInitial(DdNode* winSys, DdNode* sysIni, DdNode* envIni,
+int sysWinAllInitial(DdNode* winSys, DdNode* sysIni, DdNode* envIni,
 	DdNode* sysUnprimeVars, DdNode* envUnprimeVars)
 {
 	DdNode* sysWin = Cudd_bddAnd(manager, winSys, sysIni);
@@ -224,7 +224,7 @@ boolean sysWinAllInitial(DdNode* winSys, DdNode* sysIni, DdNode* envIni,
 	DdNode* sysWinFromInisForAllEnvIni = Cudd_bddUnivAbstract(manager, sysWinFromInis, envUnprimeVars);
 	Cudd_Ref(Cudd_Regular(sysWinFromInisForAllEnvIni));
 
-	boolean allIni = (sysWinFromInisForAllEnvIni == Cudd_ReadOne(manager));
+	int allIni = (sysWinFromInisForAllEnvIni == Cudd_ReadOne(manager));
 	////printf("allIni = %d\n", allIni);
 
 	Cudd_RecursiveDeref(manager, sysWin);
@@ -433,9 +433,9 @@ void handle_inc_safety_added(inc_gr1_data inc_data, int j, int i, int cy, DdNode
 
 	Cudd_Ref(Cudd_Regular(*x));
 }
-boolean gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca)
+	int efp, int eun, int fpr, int sca)
 {
 	inc_gr1_data inc_data;
 
@@ -462,9 +462,9 @@ boolean gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 		efp, eun, fpr, sca, false, inc_data);
 }
 
-boolean gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca, boolean isInc, inc_gr1_data inc_data)
+	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data)
 {
 	//printf("\n----Start GR1 Game: efp=%d, eun=%d, fpr=%d----\n", efp, eun, fpr);
 	if (isInc) print_inc_type(inc_data.type_bitmap);
@@ -500,7 +500,7 @@ boolean gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, D
 	int * cy_mem = malloc(sysJSize * sizeof(int));
 	memset(cy_mem, -1, sysJSize * sizeof(int));
 	int cy = 0; // count y
-	boolean firstZIter = true;
+	int firstZIter = true;
 
 	//First - Z fixed point
 	z = Cudd_ReadOne(manager);
@@ -520,13 +520,13 @@ boolean gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, D
 	int xtmp = 0;
 	int ytmp = 0;
 
-	boolean isFinished = false;
+	int isFinished = false;
 
 	if (isInc && is_inc_only_ini(inc_data.type_bitmap))
 	{
 		//printf("Only ini states changed\n");
 		z = inc_data.z_mem[sysJSize - 1];	
-		boolean is_real = sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime);
+		int is_real = sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime);
 		copy_to_gr1_mem(inc_data, currSize);
 
 		//printf("End GR1 Game: is realizable = %d\n", is_real);
@@ -767,7 +767,7 @@ boolean gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, D
 	//printf("y iterations = %d\n", yIters);
 	//printf("x iterations = %d\n", xIters);
 
-	boolean is_real = sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime);
+	int is_real = sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime);
 	//printf("End GR1 Game: is realizable = %d\n", is_real);
 
 	//Cudd_DebugCheck(manager);

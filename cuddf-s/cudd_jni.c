@@ -2409,7 +2409,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_equalBDDs0
 	bdd1 = (DdNode*)(intptr_cast_type)jbdd1;
 	bdd2 = (DdNode*)(intptr_cast_type)jbdd2;
 
-	boolean equal = IS_BDD_EQ(bdd1, bdd2);
+	int equal = IS_BDD_EQ(bdd1, bdd2);
 	res = (jboolean)equal;
 	
 	return res;
@@ -2678,7 +2678,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 
 	free_gr1_mem();
 
-	boolean result = gr1_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+	int result = gr1_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
@@ -2759,7 +2759,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 	inc_gr1_data inc_data;
 	inc_data.type_bitmap = (int)inc_bitmap;
 
-	boolean isIncData = !(inc_data.type_bitmap == INC_TYPE_NO_INC);
+	int isIncData = !(inc_data.type_bitmap == INC_TYPE_NO_INC);
 
 	//printf("isIncData=%d\n", isIncData);
 	DdNode** xArray;
@@ -2821,7 +2821,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 		//printf("inc data about X updated\n");
 	}
 	
-	boolean result = gr1_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+	int result = gr1_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, true, inc_data);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
@@ -3043,7 +3043,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 
 	free_rabin_mem();
 
-	boolean result = rabin_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+	int result = rabin_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
@@ -3109,7 +3109,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 	inc_rabin_data inc_data;
 	inc_data.type_bitmap = (int)inc_bitmap;
 
-	boolean isIncData = !(inc_data.type_bitmap == INC_TYPE_NO_INC);
+	int isIncData = !(inc_data.type_bitmap == INC_TYPE_NO_INC);
 
 	//printf("isIncData=%d\n", isIncData);
 
@@ -3185,7 +3185,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 		//printf("inc data about X updated\n");
 	}
 
-	boolean result = rabin_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+	int result = rabin_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, true, inc_data);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);

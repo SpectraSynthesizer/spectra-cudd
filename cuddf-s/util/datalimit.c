@@ -70,6 +70,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "../config.h"
+#include <stdio.h>
 
 #if HAVE_STDINT_H == 1
 #include <stdint.h>

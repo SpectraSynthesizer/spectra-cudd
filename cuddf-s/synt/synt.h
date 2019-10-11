@@ -41,7 +41,9 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>  
 //#include <crtdbg.h>  
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <stdio.h>
 #include "cudd.h"
 #include "cuddInt.h"
@@ -121,7 +123,7 @@ typedef struct incrementalRabinData {
 } inc_rabin_data;
 
 struct transQuantList {
-	boolean isInit;
+	int isInit;
 	int listSize;
 	DdNode** transList;
 	DdNode** quantSets;
@@ -135,24 +137,24 @@ struct transQuantList env_trans_quant_list;
 extern void freeBDD(DdNode* bdd);
 extern void extend_size_3D(DdNode**** in, int sizeD1, int sizeD2, int newSize);
 
-extern boolean gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+extern int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca);
-extern boolean gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	int efp, int eun, int fpr, int sca);
+extern int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca, boolean isInc, inc_gr1_data inc_data);
+	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data);
 extern void free_gr1_mem();
 
-extern boolean rabin_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+extern int rabin_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca);
-extern boolean rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	int efp, int eun, int fpr, int sca);
+extern int rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca, boolean isInc, inc_rabin_data inc_data);
+	int efp, int eun, int fpr, int sca, int isInc, inc_rabin_data inc_data);
 extern void free_rabin_mem();
 
 extern void print_inc_type(int type_bitmap);
-boolean is_inc_only_ini(int type_bitmap);
+int is_inc_only_ini(int type_bitmap);
 
 #ifdef __cplusplus
 }

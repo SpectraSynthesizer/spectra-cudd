@@ -180,7 +180,7 @@ void extend_size_1D_2D_int(int*** in, int sizeD2, int oldSize, int newSize)
 /*
 * The set of states from which the environment can force the system to to reach a state in "to". 
 */
-DdNode* control_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, boolean sca)
+DdNode* control_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
 {
 	DdNode* illegalSysTrans = Cudd_Not(sysTrans);
 	Cudd_Ref(illegalSysTrans);
@@ -213,7 +213,7 @@ DdNode* control_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars
 	return controlStates;
 }
 
-DdNode* control(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, boolean sca)
+DdNode* control(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
 {
 	int n;
 	unsigned int *arr;
@@ -272,7 +272,7 @@ DdNode* control(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPair
 	}
 
 	//DdNode* controlStates2 = control2(to, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
-	//boolean isControlStatesEq = IS_BDD_EQ(controlStates, controlStates2);
+	//int isControlStatesEq = IS_BDD_EQ(controlStates, controlStates2);
 	////printf("isYieldStatesEq = %d (true = %d, false = %d)\n", isControlStatesEq, true, false);
 	//fflush(stdout);
 	//Cudd_RecursiveDeref(manager, controlStates2);
@@ -280,7 +280,7 @@ DdNode* control(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPair
 	return controlStates;
 }
 
-//DdNode* control2(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, boolean sca)
+//DdNode* control2(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
 //{
 //	int n;
 //	unsigned int *arr;
@@ -329,7 +329,7 @@ DdNode* control(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPair
 /*
 * Check whether the env player wins from some of its initial states if winEnv are its winning states
 */
-boolean envWinAllInitial(DdNode* winEnv, DdNode* sysIni, DdNode* envIni,
+int envWinAllInitial(DdNode* winEnv, DdNode* sysIni, DdNode* envIni,
 	DdNode* sysUnprimeVars, DdNode* envUnprimeVars)
 {
 	DdNode* sysIniNot = Cudd_Not(sysIni);
@@ -345,7 +345,7 @@ boolean envWinAllInitial(DdNode* winEnv, DdNode* sysIni, DdNode* envIni,
 	DdNode* envWinFromIniStates = Cudd_bddAnd(manager, envIni, sysIniImpWinEnvForAllSys);
 	Cudd_Ref(Cudd_Regular(envWinFromIniStates));
 
-	boolean winSomeIni = !(envWinFromIniStates == Cudd_Not(Cudd_ReadOne(manager)));
+	int winSomeIni = !(envWinFromIniStates == Cudd_Not(Cudd_ReadOne(manager)));
 	////printf("winSomeIni = %d\n", winSomeIni);
 
 	Cudd_RecursiveDeref(manager, sysIniImpWinEnv);
@@ -498,18 +498,18 @@ void handle_inc_only_j_removed_r(inc_rabin_data inc_data, int * j_start_idx, DdN
 	}
 }
 
-boolean rabin_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+int rabin_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca)
+	int efp, int eun, int fpr, int sca)
 {
 	inc_rabin_data inc_data;
 	return rabin_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, false, inc_data);
 }
 
-boolean rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+int rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	boolean efp, boolean eun, boolean fpr, boolean sca, boolean isInc, inc_rabin_data inc_data)
+	int efp, int eun, int fpr, int sca, int isInc, inc_rabin_data inc_data)
 {
 	//printf("\n----Start Rabin Game: efp=%d, eun=%d, fpr=%d----\n", efp, eun, fpr);
 	if (isInc) print_inc_type(inc_data.type_bitmap);
@@ -541,7 +541,7 @@ boolean rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize,
 	if (isInc && is_inc_only_ini(inc_data.type_bitmap))
 	{
 		//printf("Only ini states changed\n");
-		boolean env_win = envWinAllInitial(inc_data.z_mem[inc_data.sizeD1 - 1], sysIni, envIni, sysUnprime, envUnprime);
+		int env_win = envWinAllInitial(inc_data.z_mem[inc_data.sizeD1 - 1], sysIni, envIni, sysUnprime, envUnprime);
 		copy_to_rabin_mem(inc_data, cx_mem, currSizeX, inc_data.sizeD1);
 		rabin_mem.sizeD1 = inc_data.sizeD1;
 		rabin_mem.xSizeD2 = inc_data.sizeD2;
@@ -587,7 +587,7 @@ boolean rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize,
 
 	DdNode *x = NULL, *y = NULL, *z = NULL;
 	DdNode *xPrev, *yPrev, *zPrev;
-	boolean firstZIter = true;
+	int firstZIter = true;
 	
 	z = Cudd_Not(Cudd_ReadOne(manager));
 	Cudd_Ref(z);
@@ -605,7 +605,7 @@ boolean rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize,
 	int xtmp = 0;
 	int ytmp = 0;
 
-	boolean isFinished = false;
+	int isFinished = false;
 
 	while (zPrev == NULL || !IS_BDD_EQ(z, zPrev))
 	{
@@ -904,7 +904,7 @@ boolean rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize,
 	//printf("y iterations = %d\n", yIters);
 	//printf("x iterations = %d\n", xIters);
 
-	boolean env_win = envWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime);
+	int env_win = envWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime);
 	//printf("End Rabin Game: is env winning = %d\n", env_win);
 
 	//Cudd_DebugCheck(manager);

@@ -69,7 +69,7 @@ void print_inc_type(int type_bitmap)
 		IS_BIT_ON(type_bitmap, INC_TYPE_NEW_SAFETY_ADDED), IS_BIT_ON(type_bitmap, INC_TYPE_NEW_JUSTICE_ADDED));
 }
 
-boolean is_inc_only_ini(int type_bitmap)
+int is_inc_only_ini(int type_bitmap)
 {
 	return ((IS_BIT_ON(type_bitmap, INC_TYPE_PREV_INI_REMOVED) && !IS_BIT_ON(type_bitmap, INC_TYPE_PREV_SAFETY_REMOVED) && !IS_BIT_ON(type_bitmap, INC_TYPE_PREV_JUSTICE_REMOVED))
 		|| (IS_BIT_ON(type_bitmap, INC_TYPE_NEW_INI_ADDED) && !IS_BIT_ON(type_bitmap, INC_TYPE_NEW_SAFETY_ADDED) && !IS_BIT_ON(type_bitmap, INC_TYPE_NEW_JUSTICE_ADDED)));

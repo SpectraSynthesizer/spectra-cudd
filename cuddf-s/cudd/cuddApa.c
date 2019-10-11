@@ -78,7 +78,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../util/util.h"
 #include "cuddInt.h"
 #include <stdio.h>
-#include <conio.h>
+// #include <conio.h>
 
 /*---------------------------------------------------------------------------*/
 /* Constant declarations                                                     */
