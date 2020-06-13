@@ -609,7 +609,110 @@ extern "C" {
 	*/
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_negCycleCheck0
 		(JNIEnv *env, jclass cl, jlong a, jlong s, jlong v, jlong p);
+		
+		
+	
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getFulfillBDD0
+		(JNIEnv *, jclass, jintArray, jintArray);
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getTowardsBDD0
+		(JNIEnv *, jclass, jintArray, jintArray);
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getEnvViolationBDD0
+		(JNIEnv *, jclass, jintArray, jintArray);
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getFixpointsStarBDD0
+		(JNIEnv *, jclass, jintArray, jintArray, jintArray);
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getJusticesStarBDD0
+		(JNIEnv *, jclass, jlongArray, jlongArray, jintArray, jintArray, jint);
 
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    getFixpointsBDD0
+	* Signature: ([I[I[I)J
+	*/
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getFixpointsBDD0
+	(JNIEnv *, jclass, jintArray, jintArray, jintArray);
+
+	/*
+	 * Class:     net_sf_javabdd_CUDDFactory
+	 * Method:    getJusticesBDD0
+	 * Signature: ([J[J[I[II)J
+	 */
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getJusticesBDD0
+	  (JNIEnv *, jclass, jlongArray, jlongArray, jintArray, jintArray, jint);
+
+	/*
+	 * Class:     net_sf_javabdd_CUDDFactory
+	 * Method:    getTransBDD0
+	 * Signature: (JJJJ[I[II)J
+	 */
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getTransBDD0
+	  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jintArray, jintArray, jint);
+
+	/*
+	 * Class:     net_sf_javabdd_CUDDFactory
+	 * Method:    loadFixpointsJits0
+	 * Signature: (J[I[I[I[IJJ)V
+	 */
+	JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_loadFixpointsJits0
+	  (JNIEnv *, jclass, jlong, jintArray, jintArray, jintArray, jintArray, jlong, jlong);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    loadJusticesJits0
+	* Signature: (J[I[IIII)V
+	*/
+	JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_loadJusticesJits0
+	(JNIEnv *, jclass, jlong, jintArray, jintArray, jint, jint, jint);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    loadTransJits0
+	* Signature: (J[I[II)V
+	*/
+	JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_loadTransJits0
+	(JNIEnv *, jclass, jlong, jintArray, jintArray, jint);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    nextStatesJits0
+	* Signature: (JJJJ)J
+	*/
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_nextStatesJits0
+	(JNIEnv *, jclass, jlong, jlong, jlong, jlong);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    initControllerJits0
+	* Signature: (JJ)I
+	*/
+	JNIEXPORT jint JNICALL Java_net_sf_javabdd_CUDDFactory_initControllerJits0
+	(JNIEnv *, jclass, jlong, jlong);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    freeControllerJits0
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_freeControllerJits0
+	(JNIEnv *, jclass);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    getTransitionsJits0
+	* Signature: ()J
+	*/
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getTransitionsJits0
+	(JNIEnv *, jclass);
+
+	/*
+	* Class:     net_sf_javabdd_CUDDFactory
+	* Method:    getInitialJits0
+	* Signature: ()J
+	*/
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getInitialJits0
+	(JNIEnv *, jclass);
+
+	
+	
 	/*
 	* Class: net_sf_javabdd_CUDDFactory
 	* GR1 game related functions
@@ -626,6 +729,24 @@ extern "C" {
 		(JNIEnv *, jclass);
 	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getZMemFirstItr0
 		(JNIEnv *, jclass);
+
+	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarWinningStates0(JNIEnv *env, jclass cl);
+	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarYMem0(JNIEnv *env, jclass cl);
+	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarFulfillExistMem0(JNIEnv *env, jclass cl);
+	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarTowardsExistMem0(JNIEnv *env, jclass cl);
+	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarXMem0(JNIEnv *env, jclass cl);
+	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarEnvJViolationMem0(JNIEnv *env, jclass cl);
+	JNIEXPORT jint JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarEnvJViolationIterNum(JNIEnv *env, jclass cl);
+	JNIEXPORT jintArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarFulfillExistIterNum(JNIEnv *env, jclass cl);
+	JNIEXPORT jintArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarTowardsExistIterNum(JNIEnv *env, jclass cl);
+	JNIEXPORT jintArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarJusticeIterNum0(JNIEnv *env, jclass cl);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StarGame0
+	(JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
+		jlongArray jsfaIni, jlongArray jsfaTrans, jlongArray jsfaTransToAcc, jlongArray jsfaUnprime, jlongArray jsfaPrime,
+		jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
+		jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
+		jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
+		jboolean efp, jboolean eun, jboolean fpr, jboolean sca, jboolean mem);
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 		(JNIEnv *, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
 			jlong, jlong, jlong, jlong, jlong, jlongArray, jlongArray, jlongArray, jlongArray, 

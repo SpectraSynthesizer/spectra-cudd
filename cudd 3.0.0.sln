@@ -7,18 +7,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cudd 3.0.0", "cuddt\cuddt.v
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		cudd 3.0|x64 = cudd 3.0|x64
-		cudd 3.0|x86 = cudd 3.0|x86
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.cudd 3.0|x64.ActiveCfg = cudd 3.0|x64
-		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.cudd 3.0|x64.Build.0 = cudd 3.0|x64
-		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.cudd 3.0|x86.ActiveCfg = cudd 3.0|Win32
-		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.cudd 3.0|x86.Build.0 = cudd 3.0|Win32
 		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.Debug|x64.ActiveCfg = Debug|x64
 		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.Debug|x64.Build.0 = Debug|x64
 		{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}.Debug|x86.ActiveCfg = Debug|Win32

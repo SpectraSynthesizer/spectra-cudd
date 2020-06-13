@@ -2,7 +2,7 @@
 
 ROOT=$(pwd)
 
-/usr/bin/gcc-5 -Wall -O3 -fPIC -c \
+gcc -std=c99 -Wall -m32 -O3 -fPIC -c \
 $ROOT/cuddf-s/cudd_jni.c \
 $ROOT/cuddf-s/cudd/*.c \
 $ROOT/cuddf-s/dddmp/*.c \
@@ -23,7 +23,7 @@ $ROOT/cuddf-s/util/*.c \
 -I$ROOT/cuddf-s/synt \
 -I$ROOT/cuddf-s/util
 
-/usr/bin/gcc-5 $ROOT/*.o -shared -z noexecstack -o $ROOT/libcudd.so
+gcc $ROOT/*.o -std=c99 -m32 -shared -z noexecstack -o $ROOT/32bit/libcudd.so
 
 rm -rf *.o
 

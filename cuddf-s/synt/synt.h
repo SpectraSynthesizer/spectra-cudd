@@ -78,6 +78,28 @@ struct gr1Mem {
 	int * sizeD3;
 };
 
+struct gr1StarMem {
+	DdNode**** x_mem;
+	DdNode*** y_mem;
+	DdNode** z_mem;
+
+	DdNode*** fulfill_exist_mem;
+	DdNode*** towards_exist_mem;
+	DdNode*** envJ_violation_mem; //mapping each env justice to memory vector of size envJ_violation_sizeD2
+	
+	int exist_sizeD1; //exist gar num
+	int* fulfill_exist_sizeD2; //number of iterations for each exist gar
+	int* towards_exist_sizeD2; //number of iterations towards each exist gar
+	
+	int envJ_violation_sizeD2; //number of outermost l.f.p. iterations to compute env justice violation strategy
+
+	int x_y_z_sizeD1; //sys justice num
+	int x_sizeD2; //env justice num
+	int* x_sizeD3; //number of Y iterations for each sys justice
+
+	DdNode* sys_win; //the system's winning region in the GR(1)* game
+};
+
 struct rabinMem {
 	DdNode**** x_mem;
 	DdNode**** x_mem_recycle;
@@ -129,14 +151,42 @@ struct transQuantList {
 	DdNode** quantSets;
 };
 
+struct existSfaGarList {
+	int isInit;
+	int listSize;
+	DdNode** sfaIniList;
+	DdNode** sfaTransList;
+	DdNode** sfaTransToAccList;
+	DdNode** sfaUnprimeStateVars;
+	DdNode** sfaPrimedStateVars;
+};
+
 struct gr1Mem gr1_mem;
+struct gr1StarMem gr1_star_mem;
 struct rabinMem rabin_mem;
 struct transQuantList sys_trans_quant_list;
 struct transQuantList env_trans_quant_list;
+struct existSfaGarList exist_gars_list;
+
+extern DdNode* ithVarInteger(DdManager* manager, int* vars, int varNum, int value);
+extern DdNode* getFixpointsBDD(DdManager* manager, int* jindices, int jindicesSize, int* iindices, int iindicesSize, int* kindices, int kindicesSize);
+extern DdNode* getTransBDD(DdManager* manager, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans, int* jindices, int jindicesSize, int* iindices, int iindicesSize, int utilindex);
+extern DdNode* getJusticesBDD(DdManager* manager, DdNode** sysJ, DdNode** envJ, int* jindices, int jindicesSize, int* iindices, int iindicesSize, int utilindex);
+
+// GR(1)* functions
+extern DdNode* getFulfillBDD(DdManager* manager, int* exjindices, int exjindicesSize, int* findices, int findicesSize);
+extern DdNode* getTowardsBDD(DdManager* manager, int* exjindices, int exjindicesSize, int* tindices, int tindicesSize);
+extern DdNode* getEnvViolationBDD(DdManager* manager, int* iindices, int iindicesSize, int* kindices, int kindicesSize);
+extern DdNode* getFixpointsStarBDD(DdManager* manager, int* jindices, int jindicesSize, int* iindices, int iindicesSize, int* kindices, int kindicesSize);
+extern DdNode* getJusticesStarBDD(DdManager* manager, DdNode** sysJ, DdNode** envJ, int* jindices, int jindicesSize, int* iindices, int iindicesSize, int utilindex);
 
 extern void freeBDD(DdNode* bdd);
 extern void extend_size_3D(DdNode**** in, int sizeD1, int sizeD2, int newSize);
+extern void extend_size_2D(DdNode*** in, int sizeD1, int newSize);
 
+extern DdNode* pred(DdNode* to, int existGarIdx, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
+extern DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
+extern int sysWinAllInitial(DdNode* winSys, DdNode* sysIni, DdNode* envIni, DdNode* sysUnprimeVars, DdNode* envUnprimeVars);
 extern int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
 	int efp, int eun, int fpr, int sca);
@@ -152,6 +202,11 @@ extern int rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSi
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
 	int efp, int eun, int fpr, int sca, int isInc, inc_rabin_data inc_data);
 extern void free_rabin_mem();
+
+extern int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
+	int efp, int eun, int fpr, int sca, int mem);
+extern void free_gr1_star_mem();
 
 extern void print_inc_type(int type_bitmap);
 int is_inc_only_ini(int type_bitmap);

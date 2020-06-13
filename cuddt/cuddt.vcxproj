@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="cudd 3.0|Win32">
@@ -47,7 +47,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -112,6 +112,11 @@
     <IncludePath>C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files\Java\jdk1.8.0_102\include\win32;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>cudd</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>cudd</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -212,12 +217,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -326,6 +333,8 @@
     <ClCompile Include="..\cuddf-s\mtr\mtrGroup.c" />
     <ClCompile Include="..\cuddf-s\st\st.c" />
     <ClCompile Include="..\cuddf-s\synt\gr1_game.c" />
+	<ClCompile Include="..\cuddf-s\synt\gr1_star_game.c" />
+    <ClCompile Include="..\cuddf-s\synt\jitcontroller.c" />
     <ClCompile Include="..\cuddf-s\synt\rabin_game.c" />
     <ClCompile Include="..\cuddf-s\synt\synt.c" />
     <ClCompile Include="..\cuddf-s\util\cpu_stats.c" />
@@ -354,6 +363,7 @@
     <ClInclude Include="..\cuddf-s\nanotrav\bnet.h" />
     <ClInclude Include="..\cuddf-s\nanotrav\ntr.h" />
     <ClInclude Include="..\cuddf-s\st\st.h" />
+    <ClInclude Include="..\cuddf-s\synt\jitcontroller.h" />
     <ClInclude Include="..\cuddf-s\synt\synt.h" />
     <ClInclude Include="..\cuddf-s\util\cstringstream.h" />
     <ClInclude Include="..\cuddf-s\util\util.h" />

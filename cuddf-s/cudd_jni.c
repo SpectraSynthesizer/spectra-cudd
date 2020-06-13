@@ -38,6 +38,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory.h>
 #include <stdio.h>
 #include "synt.h"
+#include "jitcontroller.h"
+
 
 #ifdef __linux__ 
 #include<pthread.h>
@@ -2566,6 +2568,507 @@ JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getZMemFirstItr0
 	return longJavaArray;
 }
 
+
+
+
+
+// GR(1)* functions!
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getFulfillBDD0
+(JNIEnv *env, jclass cl, jintArray jexjindices, jintArray jfindices)
+{
+	LOCK
+
+	int exjindicesSize = (int)(*env)->GetArrayLength(env, jexjindices);
+	int findicesSize = (int)(*env)->GetArrayLength(env, jfindices);
+
+	int* exjindices = (int*)(*env)->GetIntArrayElements(env, jexjindices, NULL);
+	if (exjindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* findices = (int*)(*env)->GetIntArrayElements(env, jfindices, NULL);
+	if (findices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode* fulfill = getFulfillBDD(manager, exjindices, exjindicesSize, findices, findicesSize);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)fulfill;
+
+	UNLOCK
+		return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getTowardsBDD0
+(JNIEnv *env, jclass cl, jintArray jexjindices, jintArray jtindices)
+{
+	LOCK
+
+		int exjindicesSize = (int)(*env)->GetArrayLength(env, jexjindices);
+	int tindicesSize = (int)(*env)->GetArrayLength(env, jtindices);
+
+	int* exjindices = (int*)(*env)->GetIntArrayElements(env, jexjindices, NULL);
+	if (exjindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* tindices = (int*)(*env)->GetIntArrayElements(env, jtindices, NULL);
+	if (tindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode* towards = getTowardsBDD(manager, exjindices, exjindicesSize, tindices, tindicesSize);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)towards;
+
+	UNLOCK
+		return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getEnvViolationBDD0
+(JNIEnv *env, jclass cl, jintArray jiindices, jintArray jkindices)
+{
+	LOCK
+
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+	int kindicesSize = (int)(*env)->GetArrayLength(env, jkindices);
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* kindices = (int*)(*env)->GetIntArrayElements(env, jkindices, NULL);
+	if (kindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode* towards = getTowardsBDD(manager, iindices, iindicesSize, kindices, kindicesSize);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)towards;
+
+	UNLOCK
+		return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getFixpointsStarBDD0
+(JNIEnv *env, jclass cl, jintArray jjindices, jintArray jiindices, jintArray jkindices)
+{
+	LOCK
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+	int kindicesSize = (int)(*env)->GetArrayLength(env, jkindices);
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* kindices = (int*)(*env)->GetIntArrayElements(env, jkindices, NULL);
+	if (kindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode* fixpoints = getFixpointsStarBDD(manager, jindices, jindicesSize, iindices, iindicesSize, kindices, kindicesSize);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)fixpoints;
+
+	UNLOCK
+		return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getJusticesStarBDD0
+(JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ, jintArray jjindices, jintArray jiindices, jint jutilindex)
+{
+	LOCK
+
+		int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
+	int envJSize = (int)(*env)->GetArrayLength(env, jEnvJ);
+	DdNode** sysJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jSysJ, NULL);
+	if (sysJ == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode** envJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jEnvJ, NULL);
+	if (envJ == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int utilindex = (int)jutilindex;
+
+	DdNode* justices = getJusticesStarBDD(manager, sysJ, envJ, jindices, jindicesSize, iindices, iindicesSize, utilindex);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)justices;
+
+	UNLOCK
+		return result;
+}
+
+
+
+
+
+// GR(1) functions!!
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getFixpointsBDD0
+(JNIEnv *env, jclass cl, jintArray jjindices, jintArray jiindices, jintArray jkindices)
+{
+	LOCK
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+	int kindicesSize = (int)(*env)->GetArrayLength(env, jkindices);
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	int* kindices = (int*)(*env)->GetIntArrayElements(env, jkindices, NULL);
+	if (kindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	DdNode* fixpoints = getFixpointsBDD(manager, jindices, jindicesSize, iindices, iindicesSize, kindices, kindicesSize);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)fixpoints;
+
+	UNLOCK
+	return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getTransBDD0
+(JNIEnv *env, jclass cl, jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans, jintArray jjindices, jintArray jiindices, jint jutilindex)
+{
+	LOCK
+
+	DdNode* sysIni = (DdNode*)(intptr_cast_type)jsysIni;
+	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
+	DdNode* sysTrans = (DdNode*)(intptr_cast_type)jSysTrans;
+	DdNode* envTrans = (DdNode*)(intptr_cast_type)jEnvTrans;
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+	int utilindex = (int)jutilindex;
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode* trans = getTransBDD(manager, sysIni, envIni, sysTrans, envTrans, jindices, jindicesSize, iindices, iindicesSize, utilindex);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)trans;
+
+	UNLOCK
+	return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getJusticesBDD0
+(JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ, jintArray jjindices, jintArray jiindices, jint jutilindex)
+{
+	LOCK
+
+	int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
+	int envJSize = (int)(*env)->GetArrayLength(env, jEnvJ);
+	DdNode** sysJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jSysJ, NULL);
+	if (sysJ == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	DdNode** envJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jEnvJ, NULL);
+	if (envJ == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	int utilindex = (int)jutilindex;
+
+	DdNode* justices = getJusticesBDD(manager, sysJ, envJ, jindices, jindicesSize, iindices, iindicesSize, utilindex);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)justices;
+
+	UNLOCK
+	return result;
+}
+
+
+
+// GR(1) controller execution functions!!
+
+JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_loadFixpointsJits0
+(JNIEnv *env, jclass cl, jlong jfixpoints, jintArray jjindices, jintArray jiindices, jintArray jkindices, jintArray jRanksArr, jlong jPairs, jlong jprimeVars)
+{
+	LOCK
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+	int kindicesSize = (int)(*env)->GetArrayLength(env, jkindices);
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+	DdNode* primeVars = (DdNode*)(intptr_cast_type)jprimeVars;
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	int* kindices = (int*)(*env)->GetIntArrayElements(env, jkindices, NULL);
+	if (kindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	int* ranks_arr = (int*)(*env)->GetIntArrayElements(env, jRanksArr, NULL);
+	if (jRanksArr == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	DdNode* fixpoints = (DdNode*)(intptr_cast_type)jfixpoints;
+
+	loadFixpoints(fixpoints, jindices, jindicesSize, iindices, iindicesSize, kindices, kindicesSize, ranks_arr, pairs, primeVars);
+
+	UNLOCK
+}
+
+JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_loadTransJits0
+(JNIEnv *env, jclass cl, jlong jtrans, jintArray jjindices, jintArray jiindices, jint jutilindex)
+{
+	LOCK
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+	int utilindex = (int)jutilindex;
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	DdNode* trans = (DdNode*)(intptr_cast_type)jtrans;
+
+	loadTrans(trans, jindices, jindicesSize, iindices, iindicesSize, utilindex);
+
+	UNLOCK
+}
+
+JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_loadJusticesJits0
+(JNIEnv *env, jclass cl, jlong jjustices, jintArray jjindices, jintArray jiindices, jint jutilindex, jint jn, jint jm)
+{
+	LOCK
+
+	int jindicesSize = (int)(*env)->GetArrayLength(env, jjindices);
+	int iindicesSize = (int)(*env)->GetArrayLength(env, jiindices);
+
+	int* jindices = (int*)(*env)->GetIntArrayElements(env, jjindices, NULL);
+	if (jindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	int* iindices = (int*)(*env)->GetIntArrayElements(env, jiindices, NULL);
+	if (iindices == NULL) {
+		fflush(stdout);
+		UNLOCK
+			return;
+	}
+
+	int utilindex = (int)jutilindex;
+	int newn = (int)jn;
+	int newm = (int)jm;
+
+	DdNode* justices = (DdNode*)(intptr_cast_type)jjustices;
+
+	loadJustices(justices, jindices, jindicesSize, iindices, iindicesSize, utilindex, newn, newm);
+
+	UNLOCK
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_nextStatesJits0
+(JNIEnv *env, jclass cl, jlong jcurrent, jlong jinputs, jlong jPairs, jlong junprimeVars)
+{
+	LOCK
+
+	DdNode* current = (DdNode*)(intptr_cast_type)jcurrent;
+	DdNode* inputs = (DdNode*)(intptr_cast_type)jinputs;
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+	DdNode* unprimeVars = (DdNode*)(intptr_cast_type)junprimeVars;
+
+	DdNode* next = nextStatesController(current, inputs, pairs, unprimeVars);
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)next;
+
+	UNLOCK
+	return result;
+}
+
+JNIEXPORT jint JNICALL Java_net_sf_javabdd_CUDDFactory_initControllerJits0
+(JNIEnv *env, jclass cl, jlong jcurrent, jlong jPairs)
+{
+	LOCK
+
+	DdNode* current = (DdNode*)(intptr_cast_type)jcurrent;
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+	jint result = (jint)initController(current, pairs);
+
+	UNLOCK
+	return result;
+}
+
+JNIEXPORT void JNICALL Java_net_sf_javabdd_CUDDFactory_freeControllerJits0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	freeController();
+	UNLOCK
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getTransitionsJits0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)transitions;
+	UNLOCK
+
+	return result;
+}
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getInitialJits0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+
+	jlong result;
+
+	result = (jlong)(intptr_cast_type)initial;
+	UNLOCK
+
+	return result;
+}
+
+
+
+
+
+
 JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 (JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ, 
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
@@ -2851,6 +3354,446 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 	UNLOCK
 
 	return (jboolean)result;
+}
+
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StarGame0
+(JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
+	jlongArray jsfaIni, jlongArray jsfaTrans, jlongArray jsfaTransToAcc, jlongArray jsfaUnprime, jlongArray jsfaPrime,
+	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
+	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
+	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
+	jboolean efp, jboolean eun, jboolean fpr, jboolean sca, jboolean mem)
+{
+	LOCK
+
+	int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
+	int envJSize = (int)(*env)->GetArrayLength(env, jEnvJ);
+	
+	//printf("sysJSize = %d\n", sysJSize);
+	//printf("envJSize = %d\n", envJSize);
+	DdNode** sysJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jSysJ, NULL);
+	if (sysJ == NULL) {
+		//printf("sysJ is NULL\n");
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	DdNode** envJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jEnvJ, NULL);
+	if (envJ == NULL) {
+		//printf("envJ is NULL\n");
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+	
+	int varnum = Cudd_ReadSize(manager);
+	//printf("varnum = %d\n", varnum); 
+
+	#ifdef DD_STATS
+	//printf("using DD_STATS!!!! \n");
+	#endif
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+	////printf("jPairs = %ld\n", jPairs); fflush(stdout);
+	////printf("pair_list = %ld\n",pair_list); fflush(stdout);
+
+	/*int n;
+	for (n = 0; n < varnum; ++n) {
+	DdNode* node = pairs->table[n];
+	unsigned int var = Cudd_NodeReadIndex(node);
+	//printf("pair(%d) = %d\n", n, var);
+	}*/
+
+	DdNode* sysTrans = (DdNode*)(intptr_cast_type)jSysTrans;
+	DdNode* envTrans = (DdNode*)(intptr_cast_type)jEnvTrans;
+	DdNode* sysPrimeVars = (DdNode*)(intptr_cast_type)jSysPrime;
+	DdNode* envPrimeVars = (DdNode*)(intptr_cast_type)jEnvPrime;
+
+	DdNode* sysIni = (DdNode*)(intptr_cast_type)jsysIni;
+	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
+	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
+	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
+
+	////printf("sysTrans = %d\n", sysTrans->index);
+	////printf("envTrans = %d\n", envTrans->index);
+	////printf("sysPrimeVars = %d\n", sysPrimeVars->index);
+	////printf("envPrimeVars = %d\n", envPrimeVars->index);
+
+	//DdNode* yieldStates = yield(Cudd_Not(Cudd_ReadOne(manager)), sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans);
+	////printf("yieldStates = %d\n", yieldStates->index);
+
+	int sysTransListSize = (int)(*env)->GetArrayLength(env, jsysTransList);
+	int envTransListSize = (int)(*env)->GetArrayLength(env, jenvTransList);
+	int sysQuantSetsSize = (int)(*env)->GetArrayLength(env, jsysQuantSets);
+	int envQuantSetsSize = (int)(*env)->GetArrayLength(env, jenvQuantSets);
+	//printf("sysTransListSize = %d\n", sysTransListSize);
+	//printf("envTransListSize = %d\n", envTransListSize);
+	//printf("sysQuantSetsSize = %d\n", sysQuantSetsSize);
+	//printf("envQuantSetsSize = %d\n", envQuantSetsSize);
+
+	if (sysTransListSize != sysQuantSetsSize || envTransListSize != envQuantSetsSize) {
+		//printf("TransListSize != QuantSetsSize (for sys or env)\n");
+		//fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	if (sca) {
+		//printf("simultaneous conjuction and abstraction: use Cudd_bddAndAbstract\n");
+	}
+	if (sysTransListSize == 0 || envTransListSize == 0) {
+		//printf("not given trans-quantsets lists, will use original yield\n");
+		sys_trans_quant_list.isInit = false;
+		env_trans_quant_list.isInit = false;
+	}
+	else {
+		//printf("given trans-quantsets lists, will use the decomposition yield\n");
+		sys_trans_quant_list.isInit = true;
+		sys_trans_quant_list.listSize = sysTransListSize;
+		sys_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysTransList, NULL);
+		sys_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysQuantSets, NULL);
+
+		env_trans_quant_list.isInit = true;
+		env_trans_quant_list.listSize = envTransListSize;
+		env_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvTransList, NULL);
+		env_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvQuantSets, NULL);
+
+		if (sys_trans_quant_list.transList == NULL || sys_trans_quant_list.quantSets == NULL ||
+			env_trans_quant_list.transList == NULL || env_trans_quant_list.quantSets == NULL) {
+			//printf("sys_trans_quant_list or env_trans_quant_list is NULL\n");
+			fflush(stdout);
+			UNLOCK
+			return -1;
+		}
+	}
+
+	int sfaIniSize = (int)(*env)->GetArrayLength(env, jsfaIni);
+	int sfaTransSize = (int)(*env)->GetArrayLength(env, jsfaTrans);
+	int sfaTransToAccSize = (int)(*env)->GetArrayLength(env, jsfaTransToAcc);
+	int sfaUnprimeSize = (int)(*env)->GetArrayLength(env, jsfaUnprime);
+	int sfaPrimeSize = (int)(*env)->GetArrayLength(env, jsfaPrime);
+
+	if (!(sfaIniSize == sfaTransSize && sfaTransSize == sfaTransToAccSize
+		&& sfaTransToAccSize == sfaUnprimeSize
+		&& sfaUnprimeSize == sfaPrimeSize)) {
+		
+		fflush(stdout);
+		UNLOCK
+		return -1;
+	}
+
+	if (sfaIniSize == 0) { //there are no existential guarantees with regular expressions (SFAs)
+		exist_gars_list.isInit = false;
+		exist_gars_list.listSize = 0;
+	}
+	else {
+		exist_gars_list.isInit = true;
+		exist_gars_list.listSize = sfaIniSize;
+		exist_gars_list.sfaIniList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsfaIni, NULL);
+		exist_gars_list.sfaTransList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsfaTrans, NULL);
+		exist_gars_list.sfaTransToAccList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsfaTransToAcc, NULL);
+		exist_gars_list.sfaUnprimeStateVars = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsfaUnprime, NULL);
+		exist_gars_list.sfaPrimedStateVars = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsfaPrime, NULL);
+	}
+
+	free_gr1_star_mem();
+
+	int result = gr1_star_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, mem);
+
+	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
+	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
+	if (sys_trans_quant_list.isInit) {
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysTransList, sys_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvTransList, env_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysQuantSets, sys_trans_quant_list.quantSets, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvQuantSets, env_trans_quant_list.quantSets, JNI_ABORT);
+	}
+
+	if (exist_gars_list.isInit) {
+		(*env)->ReleasePrimitiveArrayCritical(env, jsfaIni, exist_gars_list.sfaIniList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsfaTrans, exist_gars_list.sfaTransList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsfaTransToAcc, exist_gars_list.sfaTransToAccList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsfaUnprime, exist_gars_list.sfaUnprimeStateVars, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsfaPrime, exist_gars_list.sfaPrimedStateVars, JNI_ABORT);
+	}
+	
+	fflush(stdout);
+	UNLOCK
+	return (jboolean)result;
+}
+
+
+JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarWinningStates0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	jlong res = (jlong)(intptr_cast_type) gr1_star_mem.sys_win;
+	UNLOCK
+	return res;
+}
+
+JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarYMem0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	int j = 0, i, cy;
+	int sumD3 = 0;
+	
+	for (j = 0; j < gr1_star_mem.x_y_z_sizeD1; j++)
+	{
+		sumD3 += gr1_star_mem.x_sizeD3[j];
+	}
+
+	intptr_cast_type * y_memRet;
+	if (sumD3 == 0) {
+		y_memRet = NULL;
+	}
+	else {
+		y_memRet = malloc(sumD3 * sizeof(intptr_cast_type));
+	}
+
+	if (y_memRet != NULL) {
+		int idx = 0;
+		for (j = 0; j < gr1_star_mem.x_y_z_sizeD1; j++)
+		{
+			for (cy = 0; cy < gr1_star_mem.x_sizeD3[j]; cy++)
+			{
+				y_memRet[idx] = (intptr_cast_type)gr1_star_mem.y_mem[j][cy];
+				idx++;
+			}
+		}
+	}
+
+	jlongArray longJavaArray = (*env)->NewLongArray(env, sumD3);
+
+	if (y_memRet != NULL) {
+		(*env)->SetLongArrayRegion(env, longJavaArray, 0, sumD3, y_memRet);
+	}
+	free(y_memRet);
+	UNLOCK
+	return longJavaArray;
+}
+
+
+JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarFulfillExistMem0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	int k = 0, i, rk;
+	int sumD2 = 0;
+
+	for (k = 0; k < gr1_star_mem.exist_sizeD1; k++)
+	{
+		sumD2 += gr1_star_mem.fulfill_exist_sizeD2[k];
+	}
+
+	intptr_cast_type * f_exist_memRet;
+	if (sumD2 == 0) {
+		f_exist_memRet = NULL;
+	}
+	else {
+		f_exist_memRet = malloc(sumD2 * sizeof(intptr_cast_type));
+	}
+
+	if (f_exist_memRet != NULL) {
+		int idx = 0;
+		for (k = 0; k < gr1_star_mem.exist_sizeD1; k++)
+		{
+			for (rk = 0; rk < gr1_star_mem.fulfill_exist_sizeD2[k]; rk++)
+			{
+				f_exist_memRet[idx] = (intptr_cast_type)gr1_star_mem.fulfill_exist_mem[k][rk];
+				idx++;
+			}
+		}
+	}
+
+	jlongArray longJavaArray = (*env)->NewLongArray(env, sumD2);
+	if (f_exist_memRet != NULL) {
+		(*env)->SetLongArrayRegion(env, longJavaArray, 0, sumD2, f_exist_memRet);
+	}
+	free(f_exist_memRet);
+	UNLOCK
+	return longJavaArray;
+}
+
+JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarTowardsExistMem0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	int k = 0, i, rk;
+	int sumD2 = 0;
+
+	for (k = 0; k < gr1_star_mem.exist_sizeD1; k++)
+	{
+		sumD2 += gr1_star_mem.towards_exist_sizeD2[k];
+	}
+
+	intptr_cast_type * t_exist_memRet;
+	if (sumD2 == 0) {
+		t_exist_memRet = NULL;
+	}
+	else {
+		t_exist_memRet = malloc(sumD2 * sizeof(intptr_cast_type));
+	}
+
+	if (t_exist_memRet != NULL) {
+		int idx = 0;
+		for (k = 0; k < gr1_star_mem.exist_sizeD1; k++)
+		{
+			for (rk = 0; rk < gr1_star_mem.towards_exist_sizeD2[k]; rk++)
+			{
+				t_exist_memRet[idx] = (intptr_cast_type)gr1_star_mem.towards_exist_mem[k][rk];
+				idx++;
+			}
+		}
+	}
+
+	jlongArray longJavaArray = (*env)->NewLongArray(env, sumD2);
+	if (t_exist_memRet != NULL) {
+		(*env)->SetLongArrayRegion(env, longJavaArray, 0, sumD2, t_exist_memRet);
+	}
+	free(t_exist_memRet);
+	UNLOCK
+	return longJavaArray;
+}
+
+JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarXMem0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	int j = 0, i, cy;
+	int sumD3 = 0;
+
+	//TODO: TMP
+	//for (j = 0; j < gr1_star_mem.x_y_z_sizeD1; j++)
+	//{
+	//	if (gr1_star_mem.x_sizeD3[j] == -1)
+	//	{
+	//		//printf("getXMem0: gr1_mem.sizeD3[%d] = -1 ---> ok only for inc alg\n", j);
+	//		gr1_star_mem.x_sizeD3[j] = 0;
+	//	}
+	//}
+
+	for (j = 0; j < gr1_star_mem.x_y_z_sizeD1; j++)
+	{
+		sumD3 += gr1_star_mem.x_sizeD3[j];
+	}
+
+	int retSize = gr1_star_mem.x_sizeD2*sumD3;
+	intptr_cast_type * x_memRet;
+	if (retSize == 0) {
+		x_memRet = NULL;
+	}
+	else {
+		x_memRet = malloc(retSize * sizeof(intptr_cast_type));
+	}
+
+	if (x_memRet != NULL) {
+		int idx = 0;
+		for (j = 0; j < gr1_star_mem.x_y_z_sizeD1; j++)
+		{
+			for (i = 0; i < gr1_star_mem.x_sizeD2; i++)
+			{
+				for (cy = 0; cy < gr1_star_mem.x_sizeD3[j]; cy++)
+				{
+					x_memRet[idx] = (intptr_cast_type)gr1_star_mem.x_mem[j][i][cy];
+					idx++;
+				}
+			}
+		}
+	}
+
+	jlongArray longJavaArray = (*env)->NewLongArray(env, retSize);
+	if (x_memRet != NULL) {
+		(*env)->SetLongArrayRegion(env, longJavaArray, 0, retSize, x_memRet);
+	}
+	free(x_memRet);
+	UNLOCK
+	return longJavaArray;
+}
+
+JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarEnvJViolationMem0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	int i, cy;
+
+	int retSize = gr1_star_mem.x_sizeD2 * gr1_star_mem.envJ_violation_sizeD2;
+
+	intptr_cast_type *envJViolation_memRet;
+	if (retSize == 0) {
+		envJViolation_memRet = NULL;
+	}
+	else {
+		envJViolation_memRet = malloc(retSize * sizeof(intptr_cast_type));
+	}
+
+	if (envJViolation_memRet != NULL) {
+		int idx = 0;
+		for (i = 0; i < gr1_star_mem.x_sizeD2; i++)
+		{
+			for (cy = 0; cy < gr1_star_mem.envJ_violation_sizeD2; cy++)
+			{
+				envJViolation_memRet[idx] = (intptr_cast_type)gr1_star_mem.envJ_violation_mem[i][cy];
+				idx++;
+			}
+		}
+	}
+	jlongArray longJavaArray = (*env)->NewLongArray(env, retSize);
+	if (envJViolation_memRet != NULL) {
+		(*env)->SetLongArrayRegion(env, longJavaArray, 0, retSize, envJViolation_memRet);
+	}
+	free(envJViolation_memRet);
+	UNLOCK
+	return longJavaArray;
+}
+
+
+JNIEXPORT jintArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarJusticeIterNum0
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	jintArray intJavaArray = (*env)->NewIntArray(env, gr1_star_mem.x_y_z_sizeD1);
+	//printf("gr1_star_mem.x_y_z_sizeD1 = %d", gr1_star_mem.x_y_z_sizeD1);
+	if (gr1_star_mem.x_sizeD3 != NULL) {
+		(*env)->SetIntArrayRegion(env, intJavaArray, 0, gr1_star_mem.x_y_z_sizeD1, gr1_star_mem.x_sizeD3);
+	}
+	UNLOCK
+	return intJavaArray;
+}
+
+JNIEXPORT jintArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarTowardsExistIterNum
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	jintArray intJavaArray = (*env)->NewIntArray(env, gr1_star_mem.exist_sizeD1);
+	if (gr1_star_mem.towards_exist_sizeD2 != NULL) {
+		(*env)->SetIntArrayRegion(env, intJavaArray, 0, gr1_star_mem.exist_sizeD1, gr1_star_mem.towards_exist_sizeD2);
+	}
+	UNLOCK
+	return intJavaArray;
+}
+
+JNIEXPORT jintArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarFulfillExistIterNum
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	jintArray intJavaArray = (*env)->NewIntArray(env, gr1_star_mem.exist_sizeD1);
+	if (gr1_star_mem.fulfill_exist_sizeD2 != NULL) {
+		(*env)->SetIntArrayRegion(env, intJavaArray, 0, gr1_star_mem.exist_sizeD1, gr1_star_mem.fulfill_exist_sizeD2);
+	}
+	UNLOCK
+	return intJavaArray;
+}
+
+JNIEXPORT jint JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarEnvJViolationIterNum
+(JNIEnv *env, jclass cl)
+{
+	LOCK
+	jint res = (jint)gr1_star_mem.envJ_violation_sizeD2;
+	UNLOCK
+	return res;
 }
 
 /*

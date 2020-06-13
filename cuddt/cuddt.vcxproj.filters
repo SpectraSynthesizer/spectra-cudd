@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -318,6 +318,12 @@
     <ClCompile Include="..\cuddf-s\cudd_jni.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\cuddf-s\synt\jitcontroller.c">
+      <Filter>Source Files\synt</Filter>
+    </ClCompile>
+	<ClCompile Include="..\cuddf-s\synt\gr1_star_game.c">
+      <Filter>Source Files\synt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cuddf-s\cudd\cudd.h">
@@ -369,6 +375,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cuddf-s\synt\jitcontroller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
