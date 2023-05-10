@@ -3066,7 +3066,109 @@ JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getInitialJits0
 
 
 
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1SeparatedGame0
+(JNIEnv* env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
+	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
+	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
+	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
+	jboolean efp, jboolean eun, jboolean fpr, jboolean sca)
+{
+	LOCK
 
+	int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
+	int envJSize = (int)(*env)->GetArrayLength(env, jEnvJ);
+	//printf("sysJSize = %d\n", sysJSize);
+	//printf("envJSize = %d\n", envJSize);
+	DdNode** sysJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jSysJ, NULL);
+	if (sysJ == NULL) {
+		//printf("sysJ is NULL\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode** envJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jEnvJ, NULL);
+	if (envJ == NULL) {
+		//printf("envJ is NULL\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int varnum = Cudd_ReadSize(manager);
+	//printf("varnum = %d\n", varnum); 
+
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+
+	DdNode* sysTrans = (DdNode*)(intptr_cast_type)jSysTrans;
+	DdNode* envTrans = (DdNode*)(intptr_cast_type)jEnvTrans;
+	DdNode* sysPrimeVars = (DdNode*)(intptr_cast_type)jSysPrime;
+	DdNode* envPrimeVars = (DdNode*)(intptr_cast_type)jEnvPrime;
+
+	DdNode* sysIni = (DdNode*)(intptr_cast_type)jsysIni;
+	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
+	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
+	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
+
+	int sysTransListSize = (int)(*env)->GetArrayLength(env, jsysTransList);
+	int envTransListSize = (int)(*env)->GetArrayLength(env, jenvTransList);
+	int sysQuantSetsSize = (int)(*env)->GetArrayLength(env, jsysQuantSets);
+	int envQuantSetsSize = (int)(*env)->GetArrayLength(env, jenvQuantSets);
+
+	if (sysTransListSize != sysQuantSetsSize || envTransListSize != envQuantSetsSize) {
+		//printf("TransListSize != QuantSetsSize (for sys or env)\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	if (sca) {
+		//printf("simultaneous conjuction and abstraction: use Cudd_bddAndAbstract\n");
+	}
+	if (sysTransListSize == 0 || envTransListSize == 0) {
+		//printf("not given trans-quantsets lists, will use original yield\n");
+		sys_trans_quant_list.isInit = false;
+		env_trans_quant_list.isInit = false;
+	}
+	else {
+		//printf("given trans-quantsets lists, will use the decomposition yield\n");
+		sys_trans_quant_list.isInit = true;
+		sys_trans_quant_list.listSize = sysTransListSize;
+		sys_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysTransList, NULL);
+		sys_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysQuantSets, NULL);
+
+		env_trans_quant_list.isInit = true;
+		env_trans_quant_list.listSize = envTransListSize;
+		env_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvTransList, NULL);
+		env_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvQuantSets, NULL);
+
+		if (sys_trans_quant_list.transList == NULL || sys_trans_quant_list.quantSets == NULL ||
+			env_trans_quant_list.transList == NULL || env_trans_quant_list.quantSets == NULL) {
+			//printf("sys_trans_quant_list or env_trans_quant_list is NULL\n");
+			fflush(stdout);
+			UNLOCK
+				return -1;
+		}
+	}
+
+	free_gr1_mem();
+
+	int result = gr1_separated_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca);
+
+	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
+	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
+	if (sys_trans_quant_list.isInit) {
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysTransList, sys_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvTransList, env_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysQuantSets, sys_trans_quant_list.quantSets, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvQuantSets, env_trans_quant_list.quantSets, JNI_ABORT);
+	}
+
+	fflush(stdout);
+	UNLOCK
+	return (jboolean)result;
+}
 
 
 JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
@@ -4159,4 +4261,54 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 	UNLOCK
 
 	return (jboolean)result;
+}
+
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_vacuity0
+(JNIEnv* env, jclass cl, jlongArray jJust,
+	jlong jIni, jlong jTrans,
+	jlong jPrime, jlong jPairs,
+	jlong jTargetJust)
+{
+	LOCK
+	int jSize = (int)(*env)->GetArrayLength(env, jJust);
+	//printf("sysJSize = %d\n", sysJSize);
+	//printf("envJSize = %d\n", envJSize);
+	DdNode** justices = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jJust, NULL);
+	if (justices == NULL) {
+		printf("justices is NULL\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int varnum = Cudd_ReadSize(manager);
+	//printf("varnum = %d\n", varnum); 
+
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+	////printf("jPairs = %ld\n", jPairs); fflush(stdout);
+	////printf("pair_list = %ld\n",pair_list); fflush(stdout);
+
+	/*int n;
+	for (n = 0; n < varnum; ++n) {
+	DdNode* node = pairs->table[n];
+	unsigned int var = Cudd_NodeReadIndex(node);
+	//printf("pair(%d) = %d\n", n, var);
+	}*/
+	DdNode* ini = (DdNode*)(intptr_cast_type)jIni;
+	DdNode* trans = (DdNode*)(intptr_cast_type)jTrans;
+	DdNode* primeVars = (DdNode*)(intptr_cast_type)jPrime;
+	DdNode* targetJust = (DdNode*)(intptr_cast_type)jTargetJust;
+
+	////printf("sysTrans = %d\n", sysTrans->index);
+	////printf("envTrans = %d\n", envTrans->index);
+	////printf("sysPrimeVars = %d\n", sysPrimeVars->index);
+	////printf("envPrimeVars = %d\n", envPrimeVars->index);
+
+	int result = checkJusticeImplication(ini, trans, justices, jSize, targetJust, primeVars, pairs);
+
+	(*env)->ReleasePrimitiveArrayCritical(env, jJust, justices, JNI_ABORT);
+
+	fflush(stdout);
+	UNLOCK
+		return (jboolean)result;
 }

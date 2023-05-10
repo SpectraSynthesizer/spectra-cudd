@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="cudd 3.0|Win32">
       <Configuration>cudd 3.0</Configuration>
@@ -30,47 +31,47 @@
     <ProjectGuid>{BBD90F4B-3C48-4A5B-836A-8C53F24A0F04}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>cuddt</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>cudd 3.0.0</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cudd 3.0|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -109,7 +110,7 @@
     <IncludePath>C:\Program Files\Java\jdk1.8.0_131\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files\Java\jdk1.8.0_102\include\win32;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\Java\jdk-19\include\win32;C:\Program Files\Java\jdk-19\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>cudd</TargetName>
   </PropertyGroup>
@@ -149,8 +150,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\onecore\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>false</ExceptionHandling>
@@ -163,7 +164,7 @@
       </AdditionalUsingDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BrowseInformation>true</BrowseInformation>
     </ClCompile>
@@ -263,7 +264,9 @@
     <ClCompile Include="..\cuddf-s\cudd\cuddAndAbs.c" />
     <ClCompile Include="..\cuddf-s\cudd\cuddAnneal.c" />
     <ClCompile Include="..\cuddf-s\cudd\cuddApa.c" />
-    <ClCompile Include="..\cuddf-s\cudd\cuddAPI.c" />
+    <ClCompile Include="..\cuddf-s\cudd\cuddAPI.c">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Java\jdk-19\include\win32;C:\Program Files\Java\jdk-19\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\cuddf-s\cudd\cuddApprox.c" />
     <ClCompile Include="..\cuddf-s\cudd\cuddBddAbs.c" />
     <ClCompile Include="..\cuddf-s\cudd\cuddBddCorr.c" />
@@ -333,7 +336,7 @@
     <ClCompile Include="..\cuddf-s\mtr\mtrGroup.c" />
     <ClCompile Include="..\cuddf-s\st\st.c" />
     <ClCompile Include="..\cuddf-s\synt\gr1_game.c" />
-	<ClCompile Include="..\cuddf-s\synt\gr1_star_game.c" />
+    <ClCompile Include="..\cuddf-s\synt\gr1_star_game.c" />
     <ClCompile Include="..\cuddf-s\synt\jitcontroller.c" />
     <ClCompile Include="..\cuddf-s\synt\rabin_game.c" />
     <ClCompile Include="..\cuddf-s\synt\synt.c" />
@@ -348,6 +351,8 @@
     <ClCompile Include="..\cuddf-s\util\strsav.c" />
     <ClCompile Include="..\cuddf-s\util\texpand.c" />
     <ClCompile Include="..\cuddf-s\util\ucbqsort.c" />
+    <ClCompile Include="gr1_separated_game.c" />
+    <ClCompile Include="vacuity.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cuddf-s\config.h" />
@@ -369,7 +374,18 @@
     <ClInclude Include="..\cuddf-s\util\util.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.9.23\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets'))" />
+  </Target>
 </Project>
