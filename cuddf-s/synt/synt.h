@@ -208,6 +208,8 @@ extern int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSiz
 	int efp, int eun, int fpr, int sca, int mem);
 extern void free_gr1_star_mem();
 
+extern int checkJusticeImplication(DdNode* ini, DdNode* trans, DdNode** justices, int justiceNum, DdNode* targetJustice, DdNode* primeVars, CuddPairing* pairs);
+
 extern void print_inc_type(int type_bitmap);
 int is_inc_only_ini(int type_bitmap);
 

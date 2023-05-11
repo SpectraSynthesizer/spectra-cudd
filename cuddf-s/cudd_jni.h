@@ -771,6 +771,11 @@ extern "C" {
 		(JNIEnv *, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
 		jlong, jlong, jlong, jlong, jlong, jboolean, jboolean, jboolean, jboolean,
 		jint, jlong, jlongArray, jlongArray, jint, jint, jint, jintArray);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_vacuity0
+		(JNIEnv* env, jclass cl, jlongArray jJust,
+		jlong jIni, jlong jTrans,
+		jlong jPrime, jlong jPairs,
+		jlong jTargetJust);
 
 #ifdef __cplusplus
 }
