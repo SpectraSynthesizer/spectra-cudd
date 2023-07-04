@@ -41,7 +41,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jitcontroller.h"
 
 
-#ifdef __linux__ 
+#ifndef _WIN64 
 #include<pthread.h>
 #else 
 #include <Synchapi.h>
@@ -77,7 +77,7 @@ typedef long long intptr_cast_type; // WAS CHANGED FROM int to long long
 DdManager *manager;
 static jlong bdd_one, bdd_zero, add_zero;
 
-#ifdef __linux__ 
+#ifndef _WIN64 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 #define LOCK pthread_mutex_lock(&mutex);
 #define UNLOCK pthread_mutex_unlock(&mutex);
@@ -434,13 +434,13 @@ static DdNode *applyOp
 /**** START OF NATIVE METHOD IMPLEMENTATIONS ****/
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
-#ifndef __linux__ 
+#ifdef _WIN64 
 	InitializeCriticalSection(&critSec);
 #endif
 	return JNI_VERSION_1_4;
 }
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
-#ifndef __linux__ 
+#ifdef _WIN64
 	DeleteCriticalSection(&critSec);
 #endif
 }

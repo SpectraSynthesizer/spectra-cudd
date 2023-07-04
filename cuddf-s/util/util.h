@@ -102,7 +102,11 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if HAVE_UNISTD_H == 1
 //#include <unistd.h>
+#ifdef __APPLE__
+#include <sys/uio.h>
+#else
 #include <io.h>
+#endif
 #endif
 
 #include <stdio.h>

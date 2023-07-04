@@ -135,7 +135,7 @@ int intersectionNotEmpty(DdNode* a, DdNode* b)
 
 	DdNode* both = Cudd_bddAnd(manager, a, b);
 	Cudd_Ref(both);
-	boolean ans = !IS_BDD_EQ(both, zero);
+	int ans = !IS_BDD_EQ(both, zero);
 	FREE_BDD(zero);
 	FREE_BDD(both);
 	return ans;
@@ -144,7 +144,7 @@ int intersectionNotEmpty(DdNode* a, DdNode* b)
 int canReach(DdNode* target, DdNode* from, DdNode* primeVars, CuddPairing* pairs, DdNode* trans)
 {
 
-	boolean hasReached = intersectionNotEmpty(target, from);
+	int hasReached = intersectionNotEmpty(target, from);
 	DdNode* attr;
 	DdNode* attr_prev;
 	attr = Cudd_Not(Cudd_ReadOne(manager));
@@ -178,7 +178,7 @@ int checkJusticeImplication(DdNode* ini, DdNode* trans, DdNode** justices, int j
 	FREE_BDD(notJust);
 	DdNode* winWhileNotJust = buchi(justices, justiceNum, primeVars, pairs, newTrans);
 	FREE_BDD(newTrans);
-	boolean result = !canReach(ini, winWhileNotJust, primeVars, pairs, trans);
+	int result = !canReach(ini, winWhileNotJust, primeVars, pairs, trans);
 	FREE_BDD(winWhileNotJust);
 	return result;
 }

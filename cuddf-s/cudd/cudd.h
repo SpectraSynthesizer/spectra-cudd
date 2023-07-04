@@ -86,6 +86,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*---------------------------------------------------------------------------*/
 
 #include <inttypes.h>
+#include "mtr.h"
 
 /*---------------------------------------------------------------------------*/
 /* Constant declarations                                                     */
@@ -1015,7 +1016,7 @@ extern int Cudd_bddIsVarToBeGrouped(DdManager *dd, int index);
 extern int Cudd_bddSetVarToBeUngrouped(DdManager *dd, int index);
 extern int Cudd_bddIsVarToBeUngrouped(DdManager *dd, int index);
 extern int Cudd_bddIsVarHardGroup(DdManager *dd, int index);
-#ifdef MTR_H_
+
 extern MtrNode * Cudd_ReadTree(DdManager *dd);
 extern void Cudd_SetTree(DdManager *dd, MtrNode *tree);
 extern void Cudd_FreeTree(DdManager *dd);
@@ -1024,7 +1025,10 @@ extern void Cudd_SetZddTree(DdManager *dd, MtrNode *tree);
 extern void Cudd_FreeZddTree(DdManager *dd);
 extern MtrNode * Cudd_MakeTreeNode(DdManager *dd, unsigned int low, unsigned int size, unsigned int type);
 extern MtrNode * Cudd_MakeZddTreeNode(DdManager *dd, unsigned int low, unsigned int size, unsigned int type);
-#endif
+
+// Needed for strict compilation with implicit-function-declaration
+extern CUDD_VALUE_TYPE retrieve_set_maxEnergy(CUDD_VALUE_TYPE eng_bound, unsigned char set_eng, unsigned char use_max_eng_bound);
+extern CUDD_VALUE_TYPE retrieve_set_value(CUDD_VALUE_TYPE val, unsigned char set_val);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

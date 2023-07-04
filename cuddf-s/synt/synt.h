@@ -45,6 +45,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <windows.h>
 #endif
 #include <stdio.h>
+#include <string.h>
+
 #include "cudd.h"
 #include "cuddInt.h"
 
@@ -184,7 +186,16 @@ extern void freeBDD(DdNode* bdd);
 extern void extend_size_3D(DdNode**** in, int sizeD1, int sizeD2, int newSize);
 extern void extend_size_2D(DdNode*** in, int sizeD1, int newSize);
 
+extern void free_gr1_mem();
+extern void copy_to_gr1_mem(inc_gr1_data inc_data, int x_currSize);
+extern void handle_inc_guar_added(inc_gr1_data inc_data, int sysJSize, int* j_start_idx, DdNode** z, int currSize, int* cy_mem);
+extern void handle_inc_only_j_removed(inc_gr1_data inc_data, int* j_start_idx, DdNode** z, int x_currSize, int* cy_mem);
+extern void handle_inc_only_safety_removed(inc_gr1_data inc_data, int j, DdNode** y);
+extern void handle_inc_safety_added(inc_gr1_data inc_data, int j, int i, int cy, DdNode** x, DdNode* z);
+
+
 extern DdNode* pred(DdNode* to, int existGarIdx, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
+extern DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
 extern DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
 extern int sysWinAllInitial(DdNode* winSys, DdNode* sysIni, DdNode* envIni, DdNode* sysUnprimeVars, DdNode* envUnprimeVars);
 extern int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
@@ -207,6 +218,13 @@ extern int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSiz
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
 	int efp, int eun, int fpr, int sca, int mem);
 extern void free_gr1_star_mem();
+
+extern int gr1_separated_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
+	int efp, int eun, int fpr, int sca);
+extern int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
+	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data);
 
 extern int checkJusticeImplication(DdNode* ini, DdNode* trans, DdNode** justices, int justiceNum, DdNode* targetJustice, DdNode* primeVars, CuddPairing* pairs);
 

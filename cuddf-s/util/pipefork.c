@@ -96,7 +96,11 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../config.h"
 #if HAVE_UNISTD_H == 1
 #define _POSIX_SOURCE
+#ifdef __APPLE__
+#include <sys/uio.h>
+#else
 #include <io.h>
+#endif
 #endif
 #include <stdio.h>
 #if HAVE_SYS_WAIT_H == 1

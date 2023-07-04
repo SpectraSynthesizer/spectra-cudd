@@ -110,7 +110,7 @@ void free_gr1_star_mem(void)
 	gr1_star_mem.exist_sizeD1 = 0;
 }
 
-int init_memory(int justiceIterCurrSize, int fulfillExistIterCurrSize, int towardsExistIterCurrSize,
+void init_memory(int justiceIterCurrSize, int fulfillExistIterCurrSize, int towardsExistIterCurrSize,
 	int jViolationIterCurrSize, int sysJSize, int envJSize) {
 	gr1_star_mem.x_y_z_sizeD1 = sysJSize;
 	gr1_star_mem.x_sizeD2 = envJSize;
