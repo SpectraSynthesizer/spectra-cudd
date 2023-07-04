@@ -324,10 +324,10 @@
     <ClCompile Include="..\cuddf-s\synt\gr1_star_game.c">
       <Filter>Source Files\synt</Filter>
     </ClCompile>
-    <ClCompile Include="gr1_separated_game.c">
+    <ClCompile Include="..\cuddf-s\synt\gr1_separated_game.c">
       <Filter>Source Files\synt</Filter>
     </ClCompile>
-    <ClCompile Include="vacuity.c">
+    <ClCompile Include="..\cuddf-s\synt\vacuity.c">
       <Filter>Source Files\synt</Filter>
     </ClCompile>
   </ItemGroup>
@@ -385,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="..\cuddf-s\synt\jitcontroller.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cuddf-s\synt\resource.h">
+      <Filter>Source Files\synt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

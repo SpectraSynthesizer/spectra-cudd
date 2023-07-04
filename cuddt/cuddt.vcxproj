@@ -336,10 +336,12 @@
     <ClCompile Include="..\cuddf-s\mtr\mtrGroup.c" />
     <ClCompile Include="..\cuddf-s\st\st.c" />
     <ClCompile Include="..\cuddf-s\synt\gr1_game.c" />
+    <ClCompile Include="..\cuddf-s\synt\gr1_separated_game.c" />
     <ClCompile Include="..\cuddf-s\synt\gr1_star_game.c" />
     <ClCompile Include="..\cuddf-s\synt\jitcontroller.c" />
     <ClCompile Include="..\cuddf-s\synt\rabin_game.c" />
     <ClCompile Include="..\cuddf-s\synt\synt.c" />
+    <ClCompile Include="..\cuddf-s\synt\vacuity.c" />
     <ClCompile Include="..\cuddf-s\util\cpu_stats.c" />
     <ClCompile Include="..\cuddf-s\util\cpu_time.c" />
     <ClCompile Include="..\cuddf-s\util\cstringstream.c" />
@@ -351,8 +353,6 @@
     <ClCompile Include="..\cuddf-s\util\strsav.c" />
     <ClCompile Include="..\cuddf-s\util\texpand.c" />
     <ClCompile Include="..\cuddf-s\util\ucbqsort.c" />
-    <ClCompile Include="gr1_separated_game.c" />
-    <ClCompile Include="vacuity.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cuddf-s\config.h" />
@@ -369,6 +369,7 @@
     <ClInclude Include="..\cuddf-s\nanotrav\ntr.h" />
     <ClInclude Include="..\cuddf-s\st\st.h" />
     <ClInclude Include="..\cuddf-s\synt\jitcontroller.h" />
+    <ClInclude Include="..\cuddf-s\synt\resource.h" />
     <ClInclude Include="..\cuddf-s\synt\synt.h" />
     <ClInclude Include="..\cuddf-s\util\cstringstream.h" />
     <ClInclude Include="..\cuddf-s\util\util.h" />

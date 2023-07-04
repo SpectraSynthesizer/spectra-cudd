@@ -2,7 +2,7 @@
 
 ROOT=$(pwd)
 
-gcc -std=c99 -Wall -m32 -O3 -fPIC -c \
+gcc -std=c99 -Wall -Werror-implicit-function-declaration -Werror=return-type -m32 -O3 -fPIC -c \
 $ROOT/cuddf-s/cudd_jni.c \
 $ROOT/cuddf-s/cudd/*.c \
 $ROOT/cuddf-s/dddmp/*.c \
