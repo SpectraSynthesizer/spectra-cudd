@@ -149,7 +149,7 @@ void init_memory(int justiceIterCurrSize, int fulfillExistIterCurrSize, int towa
 DdNode* compute_justice_iteration(DdNode* z, int firstZIter, int* currSize, DdNode** sysJ, int sysJSize,
 	DdNode** envJ, int envJSize, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int fpr, int sca, int mem, int* cy_mem) {
+	int efp, int fpr, int sca, int sda, int mem, int* cy_mem) {
 
 	DdNode *x, *y, *zApprox = z;
 	Cudd_Ref(zApprox);
@@ -200,7 +200,7 @@ DdNode* compute_justice_iteration(DdNode* z, int firstZIter, int* currSize, DdNo
 			//Cudd_DebugCheck(manager);
 			//Cudd_CheckKeys(manager);
 
-			DdNode* yieldStatesZ = yield(zApprox, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+			DdNode* yieldStatesZ = yield(zApprox, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 			DdNode* yieldStatesZToJ = Cudd_bddAnd(manager, sysJ[j], yieldStatesZ);
 			Cudd_Ref(yieldStatesZToJ);
 			FREE_BDD(yieldStatesZ);
@@ -229,7 +229,7 @@ DdNode* compute_justice_iteration(DdNode* z, int firstZIter, int* currSize, DdNo
 				//Cudd_DebugCheck(manager);
 				//Cudd_CheckKeys(manager);
 
-				DdNode* yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+				DdNode* yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 				DdNode* start = Cudd_bddOr(manager, yieldStatesZToJ, yieldStatesY);
 				Cudd_Ref(start);
 				FREE_BDD(yieldStatesY);
@@ -291,7 +291,7 @@ DdNode* compute_justice_iteration(DdNode* z, int firstZIter, int* currSize, DdNo
 						////printf("is x one = %d\n", x == Cudd_ReadOne(manager)); fflush(stdout);
 						////printf("is xPrev one = %d\n", xPrev == Cudd_ReadOne(manager)); fflush(stdout);
 						
-						DdNode* yieldStatesX = yield(x, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+						DdNode* yieldStatesX = yield(x, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 						DdNode* yieldStatesXnotToJ = Cudd_bddAnd(manager, yieldStatesX, negEnvJ);
 						Cudd_Ref(yieldStatesXnotToJ);
 						FREE_BDD(yieldStatesX);
@@ -398,7 +398,7 @@ DdNode* compute_justice_iteration(DdNode* z, int firstZIter, int* currSize, DdNo
 
 DdNode* compute_env_assumption_violation(DdNode** envJ, int* currSize, int envJSize, DdNode* sysTrans,
 	DdNode* envTrans, DdNode* sysPrimeVars,
-	DdNode* envPrimeVars, CuddPairing* pairs, int sca, int mem) {
+	DdNode* envPrimeVars, CuddPairing* pairs, int sca, int sda, int mem) {
 	
 	DdNode *x, *xPrev, *y, *yPrev, *yieldStatesY, *negEnvJ, *yieldStatesX, *yieldStatesXnotToJ, *tmp;
 	int cy = 0;
@@ -413,7 +413,7 @@ DdNode* compute_env_assumption_violation(DdNode** envJ, int* currSize, int envJS
 		yPrev = y;
 		Cudd_Ref(yPrev);
 
-		yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+		yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 		//Cudd_Ref(yieldStatesY);
 
 		y = Cudd_Not(Cudd_ReadOne(manager));
@@ -434,7 +434,7 @@ DdNode* compute_env_assumption_violation(DdNode** envJ, int* currSize, int envJS
 				xPrev = x;
 				Cudd_Ref(xPrev);
 
-				yieldStatesX = yield(x, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+				yieldStatesX = yield(x, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 				yieldStatesXnotToJ = Cudd_bddAnd(manager, yieldStatesX, negEnvJ);
 				Cudd_Ref(yieldStatesXnotToJ);
 				FREE_BDD(yieldStatesX);
@@ -479,7 +479,7 @@ DdNode* compute_env_assumption_violation(DdNode** envJ, int* currSize, int envJS
 DdNode* compute_exist_iteration(DdNode* z, int existGarIdx, int* fulfillCurrSize, int* towardsCurrSize, DdNode** sysJ, int sysJSize,
 	DdNode** envJ, int envJSize, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int sca, int mem, int* ctowards_exist_mem, int* cfulfill_exist_mem) {
+	int sca, int sda, int mem, int* ctowards_exist_mem, int* cfulfill_exist_mem) {
 
 	DdNode* lengthOneSfaWordSuffix = Cudd_bddAnd(manager, exist_gars_list.sfaTransToAccList[existGarIdx], z);
 	Cudd_Ref(lengthOneSfaWordSuffix);
@@ -725,10 +725,17 @@ DdNode* pred(DdNode* to, int existGarIdx, DdNode* sysPrimeVars, DdNode* envPrime
 
 int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int mem)
+	int optimizations)
 {
+	int efp = (GR1_EFP & optimizations) != 0;
+	int eun = (GR1_EUN & optimizations) != 0;
+	int fpr = (GR1_FPR & optimizations) != 0;
+	int sca = (GR1_SCA & optimizations) != 0;
+	int sda = (GR1_SDA & optimizations) != 0;
+	int mem = (GR1_WITH_MEM & optimizations) != 0;
+
 	int justiceIterCurrSize = 50, fulfillExistIterCurrSize = 50, vIsNonEmpty,
-		towardsExistIterCurrSize = 50, jViolationIterCurrSize = 50, firstZIter = true, *cy_mem = NULL, cfulfill_exist_mem = NULL, *ctowards_exist_mem = NULL, eunDetected = false;
+		towardsExistIterCurrSize = 50, jViolationIterCurrSize = 50, firstZIter = true, *cy_mem = NULL, *cfulfill_exist_mem = NULL, *ctowards_exist_mem = NULL, eunDetected = false;
 	DdNode *z, *zPrev, *zNext, *V, *tmp, *existK, *gr1;
 	
 	if (mem) {
@@ -746,7 +753,7 @@ int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNo
 
 	if (exist_gars_list.isInit) {
 		V = compute_env_assumption_violation(envJ, &jViolationIterCurrSize, envJSize, sysTrans,
-			envTrans, sysPrimeVars, envPrimeVars, pairs, sca, mem);
+			envTrans, sysPrimeVars, envPrimeVars, pairs, sca, sda, mem);
 		tmp = Cudd_Not(Cudd_ReadOne(manager));
 		Cudd_Ref(tmp);
 		if (IS_BDD_EQ(V, tmp)) { //V is an empty set
@@ -785,7 +792,7 @@ int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNo
 		for (int k = 0; exist_gars_list.isInit && k < exist_gars_list.listSize; k++) {
 			existK = compute_exist_iteration(z, k, &fulfillExistIterCurrSize, &towardsExistIterCurrSize, sysJ, sysJSize,
 				envJ, envJSize, sysTrans, envTrans, sysPrimeVars, envPrimeVars, pairs,
-				sca, mem, ctowards_exist_mem, cfulfill_exist_mem);
+				sca, sda, mem, ctowards_exist_mem, cfulfill_exist_mem);
 			tmp = Cudd_bddAnd(manager, zNext, existK);
 			Cudd_Ref(tmp);
 			FREE_BDD(zNext);
@@ -796,7 +803,7 @@ int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNo
 		gr1 = compute_justice_iteration(z, firstZIter, &justiceIterCurrSize, sysJ, sysJSize,
 			envJ, envJSize, sysTrans, envTrans,
 			sysPrimeVars, envPrimeVars, pairs,
-			efp, fpr, sca, mem, cy_mem);
+			efp, fpr, sca, sda, mem, cy_mem);
 		
 		tmp = Cudd_bddAnd(manager, zNext, gr1);
 		Cudd_Ref(tmp);

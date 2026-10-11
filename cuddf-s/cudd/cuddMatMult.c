@@ -752,18 +752,18 @@ Cudd_addBellmanFord(
 
 	newVarsArr = (DdNode**)malloc(sizeof(DdNode*)*n);
 	if (newVarsArr == NULL) {
-		return NULL;
+		return 0;
 	}
 	primedVarsArr = (DdNode**)malloc(sizeof(DdNode*)*n);
 	if (primedVarsArr == NULL) {
 		free(newVarsArr);
-		return NULL;
+		return 0;
 	}
 	unPrimedVarsArr = (DdNode**)malloc(sizeof(DdNode*)*n);
 	if (unPrimedVarsArr == NULL) {
 		free(newVarsArr);
 		free(primedVarsArr);
-		return NULL;
+		return 0;
 	}
 	size = dd->size;
 	for (i = 0, j = 0; i < size; i++) {
@@ -776,7 +776,7 @@ Cudd_addBellmanFord(
 				free(newVarsArr);
 				free(primedVarsArr);
 				free(unPrimedVarsArr);
-				return NULL;
+				return 0;
 			}
 			Cudd_Ref(newVarsArr[j]);
 			Cudd_Ref(primedVarsArr[j]);

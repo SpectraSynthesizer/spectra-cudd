@@ -37,8 +37,8 @@ static DdNode* sysTrans;
 static DdNode* envTrans;
 static DdNode* sysIni;
 static DdNode* envIni;
-DdNode* transitions;
-DdNode* initial;
+extern DdNode* transitions;
+extern DdNode* initial;
 
 static DdNode**** mX;
 static DdNode*** mY;

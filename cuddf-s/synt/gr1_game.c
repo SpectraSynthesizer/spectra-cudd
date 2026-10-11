@@ -36,7 +36,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca)
+	int optimizations, DdNode* initialY)
 {
 	inc_gr1_data inc_data;
 
@@ -59,14 +59,30 @@ int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* s
 	////printf("yieldStates = %d\n", yieldStates->index);
 
 	return gr1_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, false, inc_data, initialY, false, NULL);
+}
+
+int gr1_game_evolution_aware(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
+	int optimizations, DdNode* prevZ) {
+
+	inc_gr1_data inc_data;
+
+	return gr1_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs,
-		efp, eun, fpr, sca, false, inc_data);
+		optimizations, false, inc_data, Cudd_Not(Cudd_ReadOne(manager)), true, prevZ);
 }
 
 int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data)
+	int optimizations, int isInc, inc_gr1_data inc_data, DdNode* initialY, int isEvolutionAware, DdNode* prevZ)
 {
+	int efp = (GR1_EFP & optimizations) != 0;
+	int eun = (GR1_EUN & optimizations) != 0;
+	int fpr = (GR1_FPR & optimizations) != 0;
+	int sca = (GR1_SCA & optimizations) != 0;
+	int sda = (GR1_SDA & optimizations) != 0;
+
 	//printf("\n----Start GR1 Game: efp=%d, eun=%d, fpr=%d----\n", efp, eun, fpr);
 	if (isInc) print_inc_type(inc_data.type_bitmap);
 
@@ -86,6 +102,7 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 			gr1_mem.x_mem[sysJi][envJi] = malloc(currSize * sizeof(DdNode*));
 		}
 		gr1_mem.y_mem[sysJi] = malloc(currSize * sizeof(DdNode*));
+		gr1_mem.z_mem[sysJi] = NULL;
 	}
 
 	if (isInc) {
@@ -94,6 +111,9 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 	else {
 		gr1_mem.z_mem_first_itr = NULL;
 	}
+
+	gr1_mem.last_used_sys_justice_num = -sysJSize - 1;
+	gr1_mem.stop_reason_eun = 0;
 
 	DdNode *x = NULL, *y, *z;
 	DdNode *xPrev, *yPrev, *zPrev;
@@ -104,8 +124,15 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 	int firstZIter = true;
 
 	//First - Z fixed point
-	z = Cudd_ReadOne(manager);
-	Cudd_Ref(Cudd_Regular(z));
+	if (isEvolutionAware) {
+		z = prevZ;
+	}
+	else {
+		z = Cudd_ReadOne(manager);
+	}
+
+	Cudd_Ref(z);
+
 	zPrev = NULL;
 	yPrev = NULL;
 	int j_start_idx = 0;
@@ -149,7 +176,7 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 
 		//TODO: TMP - can handle justice removes without xMem
 		if (isInc && firstZIter) handle_inc_only_j_removed(inc_data, &j_start_idx, &z,currSize, cy_mem);
-
+		
 		for (int j = j_start_idx; j < sysJSize; j++)
 		{
 			//printf("Z loop %d: j = %d\n", zIters, j); 
@@ -158,11 +185,11 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 			//Cudd_CheckKeys(manager);
 			
 			cy = 0;
-			y = Cudd_Not(Cudd_ReadOne(manager));
+			y = initialY;
 			Cudd_Ref(y);
 
 			FREE_BDD(yPrev);
-			DdNode* yieldStatesZ = yield(z, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+			DdNode* yieldStatesZ = yield(z, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 			DdNode* yieldStatesZToJ = Cudd_bddAnd(manager, sysJ[j], yieldStatesZ);
 			Cudd_Ref(yieldStatesZToJ);
 			FREE_BDD(yieldStatesZ);
@@ -186,7 +213,7 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 				//Cudd_DebugCheck(manager);
 				//Cudd_CheckKeys(manager);
 
-				DdNode* yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+				DdNode* yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 				DdNode* start = Cudd_bddOr(manager, yieldStatesZToJ, yieldStatesY);
 				Cudd_Ref(start);
 				FREE_BDD(yieldStatesY);
@@ -255,7 +282,7 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 						////printf("is x one = %d\n", x == Cudd_ReadOne(manager)); fflush(stdout);
 						////printf("is xPrev one = %d\n", xPrev == Cudd_ReadOne(manager)); fflush(stdout);
 						Cudd_Ref(xPrev);
-						DdNode* yieldStatesX = yield(x, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+						DdNode* yieldStatesX = yield(x, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 						DdNode* yieldStatesXnotToJ = Cudd_bddAnd(manager, yieldStatesX, negEnvJ);
 						Cudd_Ref(yieldStatesXnotToJ);
 						FREE_BDD(yieldStatesX);
@@ -282,7 +309,6 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 					Cudd_Ref(tmp);
 					FREE_BDD(y);
 					y = tmp;
-
 				} // End loop over envJ
 				////printf("j = %d, cy = %d\n", j,cy); fflush(stdout);
 				FREE_BDD(start);
@@ -303,19 +329,13 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 
 				////printf("IS_BDD_EQ(y, yPrev) = %d\n", IS_BDD_EQ(y, yPrev));
 			} // End Y fixed point
+			FREE_BDD(yPrev);
 			FREE_BDD(yieldStatesZToJ);
 			FREE_BDD(z);
 			z = y;
 
 			////printf("ytmp = %d\n", ytmp);
 			ytmp = 0;
-
-			if (eun && !sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime)) {
-				//printf("sysWinAllInitial is false - detected early unrealizable\n");
-				z = Cudd_Not(Cudd_ReadOne(manager));
-				isFinished = true;
-				break;
-			}
 
 			if (efp && !firstZIter) {
 				////printf("firstZIter = %d\n", firstZIter);
@@ -326,6 +346,22 @@ int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNod
 					isFinished = true;
 					break;
 				}
+			}
+
+			if (eun && !sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime)) {
+				//printf("sysWinAllInitial is false - detected early unrealizable\n");
+				// Remember the last used justice number when we first get EUN
+				gr1_mem.last_used_sys_justice_num = firstZIter ? j : -j - 1;
+
+				// Return the current winning states - even though it's only an over-approximation
+				for (int i = 0; i < sysJSize; i++) {
+					FREE_BDD(gr1_mem.z_mem[i]);
+				}
+				gr1_mem.z_mem[0] = z;
+				gr1_mem.stop_reason_eun = 1;
+				Cudd_Ref(gr1_mem.z_mem[0]);
+				isFinished = true;
+				break;
 			}
 
 			//TODO: for each i save the last x_mem[j][i][cy_mem[j]] 

@@ -126,6 +126,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +140,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,7 +153,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\onecore\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\onecore\x64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>false</ExceptionHandling>
@@ -183,7 +185,7 @@
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>D_STATS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;$(JAVA_HOME)\include\win32;$(JAVA_HOME)\include;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;$(JAVA_HOME)\include\win32;$(JAVA_HOME)\include;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>false</ExceptionHandling>
@@ -218,7 +220,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -238,7 +240,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <AdditionalIncludeDirectories>C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32;C:\Program Files\Java\jdk1.8.0_102\include\win32;C:\Program Files\Java\jdk1.8.0_102\include;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\amd64;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib;$(ProjectDir)..\Debug;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\onecore\arm;$(SolutionDir)cuddf-s\epd;$(SolutionDir)cuddf-s\cudd;$(SolutionDir)cuddf-s\mtr;$(SolutionDir)cuddf-s\st;$(SolutionDir)cuddf-s\util;$(SolutionDir)cuddf-s\synt</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>

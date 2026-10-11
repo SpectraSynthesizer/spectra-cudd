@@ -730,6 +730,10 @@ extern "C" {
 	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getZMemFirstItr0
 		(JNIEnv *, jclass);
 
+	JNIEXPORT jint JNICALL Java_net_sf_javabdd_CUDDFactory_getLastUsedSysJusticeNum0(JNIEnv*, jclass);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StoppedForEun0(JNIEnv* env, jclass cl);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinStoppedForEun0(JNIEnv* env, jclass cl);
+
 	JNIEXPORT jlong JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarWinningStates0(JNIEnv *env, jclass cl);
 	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarYMem0(JNIEnv *env, jclass cl);
 	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getGR1StarFulfillExistMem0(JNIEnv *env, jclass cl);
@@ -746,15 +750,25 @@ extern "C" {
 		jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 		jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
 		jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
-		jboolean efp, jboolean eun, jboolean fpr, jboolean sca, jboolean mem);
+		jint optimizations);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1SeparatedGame0
+	(JNIEnv* env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
+		jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
+		jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
+		jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
+		jint optimizations, jlong jInitialY);
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 		(JNIEnv *, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
 			jlong, jlong, jlong, jlong, jlong, jlongArray, jlongArray, jlongArray, jlongArray, 
-			jboolean, jboolean, jboolean, jboolean);
+			jint, jlong);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameEvolutionAware0
+	(JNIEnv*, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
+		jlong, jlong, jlong, jlong, jlong, jlongArray, jlongArray, jlongArray, jlongArray,
+		jint, jlong);
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 		(JNIEnv *, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
-			jlong, jlong, jlong, jlong,	jlong, jboolean, jboolean, jboolean, jboolean,
-			jint, jlong, jlongArray, jlongArray, jlongArray, jint, jint, jint, jintArray);
+			jlong, jlong, jlong, jlong,	jlong, jint,
+			jint, jlong, jlongArray, jlongArray, jlongArray, jint, jint, jint, jintArray, jlong);
 	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getRabinXMem0
 		(JNIEnv *env, jclass cl);
 	JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getRabinZMem0
@@ -766,11 +780,15 @@ extern "C" {
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 		(JNIEnv *, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
 			jlong, jlong, jlong, jlong, jlong, jlongArray, jlongArray, jlongArray, jlongArray,
-			jboolean, jboolean, jboolean, jboolean);
+			jint, jlong);
+	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameEvolutionAware0
+	(JNIEnv*, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
+		jlong, jlong, jlong, jlong, jlong, jlongArray, jlongArray, jlongArray, jlongArray,
+		jint, jlong);
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 		(JNIEnv *, jclass, jlongArray, jlongArray, jlong, jlong, jlong, jlong,
-		jlong, jlong, jlong, jlong, jlong, jboolean, jboolean, jboolean, jboolean,
-		jint, jlong, jlongArray, jlongArray, jint, jint, jint, jintArray);
+		jlong, jlong, jlong, jlong, jlong, jint,
+		jint, jlong, jlongArray, jlongArray, jint, jint, jint, jintArray, jlong);
 	JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_vacuity0
 		(JNIEnv* env, jclass cl, jlongArray jJust,
 		jlong jIni, jlong jTrans,

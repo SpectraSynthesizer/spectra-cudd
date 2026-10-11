@@ -34,65 +34,29 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cuddInt.h"
 #include <stdio.h>
 
-/*
-* The set of states from which the system and environment can together reach "toPrime" in a single step
-*/
-DdNode* prev(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
-{
-	int n;
-	unsigned int* arr;
-	int varnum = Cudd_ReadSize(manager);
-	arr = (unsigned int*)malloc(sizeof(unsigned int) * varnum);
-	if (arr == NULL) {
-		//printf("couldn't allocate array of uint of size %d\n", varnum);
-		fflush(stdout);
-		return INVALID_BDD;
-	}
-	for (n = 0; n < varnum; ++n) {
-		DdNode* node = pairs->table[n];
-		unsigned int var = Cudd_NodeReadIndex(node);
-		arr[n] = var;
-	}
-	DdNode* toPrime = Cudd_bddPermute(manager, to, arr);
-	Cudd_Ref(toPrime);
-	free(arr);
-	DdNode* combinedTrans = Cudd_bddAnd(manager, sysTrans, envTrans);
-	Cudd_Ref(combinedTrans);
-	//DdNode* primedVars = Cudd_bddOr(manager, sysPrimeVars, envPrimeVars);
-	//Cudd_Ref(primedVars);
-	DdNode* transAndTo = Cudd_bddAnd(manager, combinedTrans, toPrime);
-	Cudd_Ref(transAndTo);
-	DdNode* preResult = Cudd_bddExistAbstract(manager, transAndTo, envPrimeVars);
-	Cudd_Ref(preResult);
-	DdNode* result = Cudd_bddExistAbstract(manager, preResult, sysPrimeVars);
-	//DdNode* result = Cudd_bddExistAbstract(manager, transAndTo, primedVars);
-	Cudd_Ref(result);
-	Cudd_RecursiveDeref(manager, transAndTo);
-	//Cudd_RecursiveDeref(manager, primedVars);
-	Cudd_RecursiveDeref(manager, combinedTrans);
-	Cudd_RecursiveDeref(manager, toPrime);
-	Cudd_RecursiveDeref(manager, preResult);
-	return result;
-}
-
-
 
 int gr1_separated_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca)
+	int optimizations, DdNode* initialY)
 {
 	inc_gr1_data inc_data;
 
 
 	return gr1_separated_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
 		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs,
-		efp, eun, fpr, sca, false, inc_data);
+		optimizations, false, inc_data, initialY);
 }
 
 int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data)
+	int optimizations, int isInc, inc_gr1_data inc_data, DdNode* initialY)
 {
+	int efp = (GR1_EFP & optimizations) != 0;
+	int eun = (GR1_EUN & optimizations) != 0;
+	int fpr = (GR1_FPR & optimizations) != 0;
+	int sca = (GR1_SCA & optimizations) != 0;
+	int sda = (GR1_SDA & optimizations) != 0;
+
 	//printf("\n----Start GR1 Game: efp=%d, eun=%d, fpr=%d----\n", efp, eun, fpr); fflush(stdout);
 	if (isInc) print_inc_type(inc_data.type_bitmap);
 
@@ -112,6 +76,7 @@ int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJS
 			gr1_mem.x_mem[sysJi][envJi] = malloc(currSize * sizeof(DdNode*));
 		}
 		gr1_mem.y_mem[sysJi] = malloc(currSize * sizeof(DdNode*));
+		gr1_mem.z_mem[sysJi] = NULL;
 	}
 
 	if (isInc) {
@@ -120,6 +85,9 @@ int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJS
 	else {
 		gr1_mem.z_mem_first_itr = NULL;
 	}
+
+	gr1_mem.last_used_sys_justice_num = -sysJSize - 1;
+	gr1_mem.stop_reason_eun = 0;
 
 	DdNode* x = NULL, * y, * z, * w;
 	DdNode* xPrev, * yPrev, * zPrev, * wPrev;
@@ -174,11 +142,11 @@ int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJS
 		for (int j = j_start_idx; j < sysJSize; j++)
 		{
 			cy = 0;
-			y = Cudd_Not(Cudd_ReadOne(manager));
+			y = initialY;
 			Cudd_Ref(y);
 
 			FREE_BDD(yPrev);
-			DdNode* yieldStatesZ = yield(z, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+			DdNode* yieldStatesZ = yield(z, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 			DdNode* yieldStatesZToJ = Cudd_bddAnd(manager, sysJ[j], yieldStatesZ);
 			Cudd_Ref(yieldStatesZToJ);
 			FREE_BDD(yieldStatesZ);
@@ -194,7 +162,7 @@ int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJS
 				yPrev = y;
 				Cudd_Ref(yPrev);
 				
-				DdNode* yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+				DdNode* yieldStatesY = yield(y, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 				DdNode* start = Cudd_bddOr(manager, yieldStatesZToJ, yieldStatesY);
 				Cudd_Ref(start);
 				FREE_BDD(yieldStatesY);
@@ -265,9 +233,9 @@ int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJS
 							Cudd_Ref(wPrev);
 							DdNode* wOrXAndNegEnvJ = Cudd_bddOr(manager, w, xAndNegEnvJ);
 							Cudd_Ref(wOrXAndNegEnvJ);
-							DdNode* yieldWOrXAndNegEnvJ = yield(wOrXAndNegEnvJ, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+							DdNode* yieldWOrXAndNegEnvJ = yield(wOrXAndNegEnvJ, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 							FREE_BDD(wOrXAndNegEnvJ);
-							DdNode* preExistW = prev(w, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+							DdNode* preExistW = pred(w, -1, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
 							DdNode* condPre = Cudd_bddAnd(manager, preExistW, yieldWOrXAndNegEnvJ);
 							Cudd_Ref(condPre);
 							FREE_BDD(yieldWOrXAndNegEnvJ);
@@ -331,7 +299,14 @@ int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJS
 
 			if (eun && !sysWinAllInitial(z, sysIni, envIni, sysUnprime, envUnprime)) {
 				//printf("sysWinAllInitial is false - detected early unrealizable\n");
-				z = Cudd_Not(Cudd_ReadOne(manager));
+				gr1_mem.last_used_sys_justice_num = firstZIter ? j : -j - 1;
+
+				for (int i = 0; i < sysJSize; i++) {
+					FREE_BDD(gr1_mem.z_mem[i]);
+				}
+				gr1_mem.z_mem[0] = z;
+				gr1_mem.stop_reason_eun = 1;
+				Cudd_Ref(gr1_mem.z_mem[0]);
 				isFinished = true;
 				break;
 			}

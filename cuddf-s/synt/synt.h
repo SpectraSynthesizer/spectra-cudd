@@ -78,6 +78,8 @@ struct gr1Mem {
 	int sizeD1;
 	int sizeD2;
 	int * sizeD3;
+	int last_used_sys_justice_num;
+	int stop_reason_eun;
 };
 
 struct gr1StarMem {
@@ -109,6 +111,7 @@ struct rabinMem {
 	int sizeD1;
 	int xSizeD2;
 	int ** sizeD3;
+	int stop_reason_eun;
 };
 
 typedef enum INC_TYPE {
@@ -163,12 +166,29 @@ struct existSfaGarList {
 	DdNode** sfaPrimedStateVars;
 };
 
-struct gr1Mem gr1_mem;
-struct gr1StarMem gr1_star_mem;
-struct rabinMem rabin_mem;
-struct transQuantList sys_trans_quant_list;
-struct transQuantList env_trans_quant_list;
-struct existSfaGarList exist_gars_list;
+enum gr1Optimizations {
+	GR1_EFP = 1,
+	GR1_EUN = 1 << 1,
+	GR1_FPR = 1 << 2,
+	GR1_SCA = 1 << 3,
+	GR1_SDA = 1 << 4,
+	GR1_WITH_MEM = 1 << 5 // currently only for GR1*
+};
+
+enum rabinOptimizations {
+	RABIN_EFP = 1,
+	RABIN_EUN = 1 << 1,
+	RABIN_FPR = 1 << 2,
+	RABIN_SCA = 1 << 3,
+	RABIN_SDA = 1 << 4
+};
+
+extern struct gr1Mem gr1_mem;
+extern struct gr1StarMem gr1_star_mem;
+extern struct rabinMem rabin_mem;
+extern struct transQuantList sys_trans_quant_list;
+extern struct transQuantList env_trans_quant_list;
+extern struct existSfaGarList exist_gars_list;
 
 extern DdNode* ithVarInteger(DdManager* manager, int* vars, int varNum, int value);
 extern DdNode* getFixpointsBDD(DdManager* manager, int* jindices, int jindicesSize, int* iindices, int iindicesSize, int* kindices, int kindicesSize);
@@ -195,41 +215,51 @@ extern void handle_inc_safety_added(inc_gr1_data inc_data, int j, int i, int cy,
 
 
 extern DdNode* pred(DdNode* to, int existGarIdx, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
-extern DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
-extern DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca);
+extern DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca, int sda);
+extern DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca, int sda);
 extern int sysWinAllInitial(DdNode* winSys, DdNode* sysIni, DdNode* envIni, DdNode* sysUnprimeVars, DdNode* envUnprimeVars);
 extern int gr1_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, int optimizations, DdNode* initialY);
+extern int gr1_game_evolution_aware(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca);
+	int optimizations, DdNode* prevZ);
+
 extern int gr1_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data);
+	int optimizations, int isInc, inc_gr1_data inc_data, DdNode* initialY, int isEvolutionAware, DdNode* prevZ);
+
 extern void free_gr1_mem();
 
 extern int rabin_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca);
+	int optimizations, DdNode* initialY);
+extern int rabin_game_evolution_aware(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
+	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
+	int optimizations, DdNode* prevZ);
+
 extern int rabin_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int isInc, inc_rabin_data inc_data);
+	int optimizations, int isInc, inc_rabin_data inc_data, DdNode* initialY, int isEvolutionAware, DdNode* prevZ);
 extern void free_rabin_mem();
 
 extern int gr1_star_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int mem);
+	int optimizations);
 extern void free_gr1_star_mem();
 
 extern int gr1_separated_game(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca);
+	int optimizations, DdNode* initialY);
 extern int gr1_separated_game_inc(DdNode** sysJ, int sysJSize, DdNode** envJ, int envJSize, DdNode* sysIni, DdNode* envIni, DdNode* sysTrans, DdNode* envTrans,
 	DdNode* sysUnprime, DdNode* envUnprime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs,
-	int efp, int eun, int fpr, int sca, int isInc, inc_gr1_data inc_data);
+	int optimizations, int isInc, inc_gr1_data inc_data, DdNode* initialY);
 
 extern int checkJusticeImplication(DdNode* ini, DdNode* trans, DdNode** justices, int justiceNum, DdNode* targetJustice, DdNode* primeVars, CuddPairing* pairs);
 
 extern void print_inc_type(int type_bitmap);
 int is_inc_only_ini(int type_bitmap);
+
+extern DdNode* helperBddOrUniversalAbstract(DdManager* manager, DdNode* f, DdNode* g, DdNode* varSet);
 
 #ifdef __cplusplus
 }

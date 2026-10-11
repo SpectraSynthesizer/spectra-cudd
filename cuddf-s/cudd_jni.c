@@ -2536,13 +2536,18 @@ JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getZMem0
 {
 	LOCK
 	intptr_cast_type * z_memRet = malloc(gr1_mem.sizeD1 * sizeof(intptr_cast_type));
-	for (int j = 0; j < gr1_mem.sizeD1; j++)
+	int j;
+	for (j = 0; j < gr1_mem.sizeD1; j++)
 	{
+		if (gr1_mem.z_mem[j] == NULL) {
+			break; // From now on, all will be NULL
+		}
+
 		z_memRet[j] = (intptr_cast_type)gr1_mem.z_mem[j];
 	}
 
-	jlongArray longJavaArray = (*env)->NewLongArray(env, gr1_mem.sizeD1);
-	(*env)->SetLongArrayRegion(env, longJavaArray, 0, gr1_mem.sizeD1, z_memRet);
+	jlongArray longJavaArray = (*env)->NewLongArray(env, j);
+	(*env)->SetLongArrayRegion(env, longJavaArray, 0, j, z_memRet);
 
 	free(z_memRet);
 	UNLOCK
@@ -2568,9 +2573,26 @@ JNIEXPORT jlongArray JNICALL Java_net_sf_javabdd_CUDDFactory_getZMemFirstItr0
 	return longJavaArray;
 }
 
+JNIEXPORT jint JNICALL Java_net_sf_javabdd_CUDDFactory_getLastUsedSysJusticeNum0(JNIEnv* env, jclass cl) {
+	LOCK
+	jint justiceNum = gr1_mem.last_used_sys_justice_num;
+	UNLOCK
+	return justiceNum;
+}
 
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StoppedForEun0(JNIEnv* env, jclass cl) {
+	LOCK
+		jboolean result = gr1_mem.stop_reason_eun;
+	UNLOCK
+	return result;
+}
 
-
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinStoppedForEun0(JNIEnv* env, jclass cl) {
+	LOCK
+		jboolean result = rabin_mem.stop_reason_eun;
+	UNLOCK
+	return result;
+}
 
 // GR(1)* functions!
 
@@ -3071,7 +3093,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1SeparatedGame0
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
 	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
-	jboolean efp, jboolean eun, jboolean fpr, jboolean sca)
+	jint optimizations, jlong jInitialY)
 {
 	LOCK
 
@@ -3110,6 +3132,8 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1SeparatedGame0
 	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
 	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
 
+	DdNode* initialY = (DdNode*)(intptr_cast_type)jInitialY;
+
 	int sysTransListSize = (int)(*env)->GetArrayLength(env, jsysTransList);
 	int envTransListSize = (int)(*env)->GetArrayLength(env, jenvTransList);
 	int sysQuantSetsSize = (int)(*env)->GetArrayLength(env, jsysQuantSets);
@@ -3122,9 +3146,6 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1SeparatedGame0
 			return -1;
 	}
 
-	if (sca) {
-		//printf("simultaneous conjuction and abstraction: use Cudd_bddAndAbstract\n");
-	}
 	if (sysTransListSize == 0 || envTransListSize == 0) {
 		//printf("not given trans-quantsets lists, will use original yield\n");
 		sys_trans_quant_list.isInit = false;
@@ -3154,7 +3175,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1SeparatedGame0
 	free_gr1_mem();
 
 	int result = gr1_separated_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
-		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca);
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, initialY);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
@@ -3176,7 +3197,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
 	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
-	jboolean efp, jboolean eun, jboolean fpr, jboolean sca)
+	jint optimizations, jlong jInitialY)
 {
 	LOCK
 
@@ -3227,6 +3248,8 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
 	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
 
+	DdNode* initialY = (DdNode*)(intptr_cast_type)jInitialY;
+
 	////printf("sysTrans = %d\n", sysTrans->index);
 	////printf("envTrans = %d\n", envTrans->index);
 	////printf("sysPrimeVars = %d\n", sysPrimeVars->index);
@@ -3251,9 +3274,6 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 		return -1;
 	}
 
-	if (sca) {
-		//printf("simultaneous conjuction and abstraction: use Cudd_bddAndAbstract\n");
-	}
 	if (sysTransListSize == 0 || envTransListSize == 0) {
 		//printf("not given trans-quantsets lists, will use original yield\n");
 		sys_trans_quant_list.isInit = false;
@@ -3284,7 +3304,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 	free_gr1_mem();
 
 	int result = gr1_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
-		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca);
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, initialY);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
@@ -3300,13 +3320,142 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1Game0
 	return (jboolean)result;
 }
 
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameEvolutionAware0
+(JNIEnv* env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
+	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
+	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
+	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
+	jint optimizations, jlong jPrevZ)
+{
+	LOCK
+
+		int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
+	int envJSize = (int)(*env)->GetArrayLength(env, jEnvJ);
+	//printf("sysJSize = %d\n", sysJSize);
+	//printf("envJSize = %d\n", envJSize);
+	DdNode** sysJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jSysJ, NULL);
+	if (sysJ == NULL) {
+		//printf("sysJ is NULL\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	DdNode** envJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jEnvJ, NULL);
+	if (envJ == NULL) {
+		//printf("envJ is NULL\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	int varnum = Cudd_ReadSize(manager);
+	//printf("varnum = %d\n", varnum); 
+
+#ifdef DD_STATS
+//printf("using DD_STATS!!!! \n");
+#endif
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+	////printf("jPairs = %ld\n", jPairs); fflush(stdout);
+	////printf("pair_list = %ld\n",pair_list); fflush(stdout);
+
+	/*int n;
+	for (n = 0; n < varnum; ++n) {
+	DdNode* node = pairs->table[n];
+	unsigned int var = Cudd_NodeReadIndex(node);
+	//printf("pair(%d) = %d\n", n, var);
+	}*/
+
+	DdNode* sysTrans = (DdNode*)(intptr_cast_type)jSysTrans;
+	DdNode* envTrans = (DdNode*)(intptr_cast_type)jEnvTrans;
+	DdNode* sysPrimeVars = (DdNode*)(intptr_cast_type)jSysPrime;
+	DdNode* envPrimeVars = (DdNode*)(intptr_cast_type)jEnvPrime;
+	DdNode* prevZ = (DdNode*)(intptr_cast_type)jPrevZ;
+
+	DdNode* sysIni = (DdNode*)(intptr_cast_type)jsysIni;
+	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
+	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
+	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
+
+
+	//printf("sysTrans = %d\n", sysTrans->index);
+	//printf("envTrans = %d\n", envTrans->index);
+	//printf("sysPrimeVars = %d\n", sysPrimeVars->index);
+	//printf("envPrimeVars = %d\n", envPrimeVars->index);
+
+	//DdNode* yieldStates = yield(Cudd_Not(Cudd_ReadOne(manager)), sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans);
+	////printf("yieldStates = %d\n", yieldStates->index);
+
+	int sysTransListSize = (int)(*env)->GetArrayLength(env, jsysTransList);
+	int envTransListSize = (int)(*env)->GetArrayLength(env, jenvTransList);
+	int sysQuantSetsSize = (int)(*env)->GetArrayLength(env, jsysQuantSets);
+	int envQuantSetsSize = (int)(*env)->GetArrayLength(env, jenvQuantSets);
+	//printf("sysTransListSize = %d\n", sysTransListSize);
+	//printf("envTransListSize = %d\n", envTransListSize);
+	//printf("sysQuantSetsSize = %d\n", sysQuantSetsSize);
+	//printf("envQuantSetsSize = %d\n", envQuantSetsSize);
+
+	if (sysTransListSize != sysQuantSetsSize || envTransListSize != envQuantSetsSize) {
+		//printf("TransListSize != QuantSetsSize (for sys or env)\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	if (sysTransListSize == 0 || envTransListSize == 0) {
+		//printf("not given trans-quantsets lists, will use original yield\n");
+		sys_trans_quant_list.isInit = false;
+		env_trans_quant_list.isInit = false;
+	}
+	else {
+		//printf("given trans-quantsets lists, will use the decomposition yield\n");
+		sys_trans_quant_list.isInit = true;
+		sys_trans_quant_list.listSize = sysTransListSize;
+		sys_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysTransList, NULL);
+		sys_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysQuantSets, NULL);
+
+		env_trans_quant_list.isInit = true;
+		env_trans_quant_list.listSize = envTransListSize;
+		env_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvTransList, NULL);
+		env_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvQuantSets, NULL);
+
+		if (sys_trans_quant_list.transList == NULL || sys_trans_quant_list.quantSets == NULL ||
+			env_trans_quant_list.transList == NULL || env_trans_quant_list.quantSets == NULL) {
+			//printf("sys_trans_quant_list or env_trans_quant_list is NULL\n");
+			fflush(stdout);
+			UNLOCK
+				return -1;
+		}
+	}
+
+
+	free_gr1_mem();
+
+	int result = gr1_game_evolution_aware(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, prevZ);
+
+	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
+	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
+	if (sys_trans_quant_list.isInit) {
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysTransList, sys_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvTransList, env_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysQuantSets, sys_trans_quant_list.quantSets, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvQuantSets, env_trans_quant_list.quantSets, JNI_ABORT);
+	}
+
+	fflush(stdout);
+	UNLOCK
+		return (jboolean)result;
+}
+
+
 JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 (JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime,
-	jlong jPairs, jboolean efp, jboolean eun, jboolean fpr, jboolean sca,
+	jlong jPairs, jint optimizations,
 	jint inc_bitmap, jlong inc_start_z, jlongArray inc_z_mem, jlongArray inc_z_mem_first_itr, jlongArray inc_x_mem, 
-	jint jIdx, jint inc_sizeD1, jint inc_sizeD2, jintArray inc_sizeD3)
+	jint jIdx, jint inc_sizeD1, jint inc_sizeD2, jintArray inc_sizeD3, jlong jInitialY)
 {
 	LOCK
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -3356,6 +3505,8 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
 	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
 	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
+
+	DdNode* initialY = (DdNode*)(intptr_cast_type)jInitialY;
 
 	free_gr1_mem();
 
@@ -3427,7 +3578,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1GameInc0
 	}
 	
 	int result = gr1_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
-		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, true, inc_data);
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, true, inc_data, initialY, false, NULL);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
@@ -3464,7 +3615,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StarGame0
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
 	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
-	jboolean efp, jboolean eun, jboolean fpr, jboolean sca, jboolean mem)
+	jint optimizations)
 {
 	LOCK
 
@@ -3540,9 +3691,6 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StarGame0
 		return -1;
 	}
 
-	if (sca) {
-		//printf("simultaneous conjuction and abstraction: use Cudd_bddAndAbstract\n");
-	}
 	if (sysTransListSize == 0 || envTransListSize == 0) {
 		//printf("not given trans-quantsets lists, will use original yield\n");
 		sys_trans_quant_list.isInit = false;
@@ -3601,7 +3749,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_gr1StarGame0
 	free_gr1_star_mem();
 
 	int result = gr1_star_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
-		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, mem);
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
@@ -4005,7 +4153,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
 	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
-	jboolean efp, jboolean eun, jboolean fpr, jboolean sca)
+	jint optimizations, jlong jInitialY)
 {
 	LOCK
 	int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
@@ -4041,6 +4189,8 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
 	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
 
+	DdNode* initialY = (DdNode*)(intptr_cast_type)jInitialY;
+
 	int sysTransListSize = (int)(*env)->GetArrayLength(env, jsysTransList);
 	int envTransListSize = (int)(*env)->GetArrayLength(env, jenvTransList);
 	int sysQuantSetsSize = (int)(*env)->GetArrayLength(env, jsysQuantSets);
@@ -4057,9 +4207,6 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 		return -1;
 	}
 
-	if (sca) {
-		//printf("simultaneous conjuction and abstraction: use Cudd_bddAndAbstract\n");
-	}
 	if (sysTransListSize == 0 || envTransListSize == 0) {
 		//printf("not given trans-quantsets lists, will use original control\n");
 		sys_trans_quant_list.isInit = false;
@@ -4089,7 +4236,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 	free_rabin_mem();
 
 	int result = rabin_game(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
-		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca);
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, initialY);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
@@ -4105,13 +4252,117 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGame0
 	return (jboolean)result;
 }
 
+JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameEvolutionAware0
+(JNIEnv* env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
+	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
+	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime, jlong jPairs,
+	jlongArray jsysTransList, jlongArray jenvTransList, jlongArray jsysQuantSets, jlongArray jenvQuantSets,
+	jint optimizations, jlong jPrevZ)
+{
+	LOCK
+		int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
+	int envJSize = (int)(*env)->GetArrayLength(env, jEnvJ);
+	//printf("sysJSize = %d\n", sysJSize);
+	//printf("envJSize = %d\n", envJSize);
+	DdNode** sysJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jSysJ, NULL);
+	if (sysJ == NULL) {
+		//printf("sysJ is NULL\n");
+		UNLOCK
+			return -1;
+	}
+
+	DdNode** envJ = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jEnvJ, NULL);
+	if (envJ == NULL) {
+		//printf("envJ is NULL\n");
+		UNLOCK
+			return -1;
+	}
+
+	int varnum = Cudd_ReadSize(manager);
+	//printf("varnum = %d\n", varnum);
+
+	CuddPairing* pairs = (CuddPairing*)(intptr_cast_type)jPairs;
+
+	DdNode* sysTrans = (DdNode*)(intptr_cast_type)jSysTrans;
+	DdNode* envTrans = (DdNode*)(intptr_cast_type)jEnvTrans;
+	DdNode* sysPrimeVars = (DdNode*)(intptr_cast_type)jSysPrime;
+	DdNode* envPrimeVars = (DdNode*)(intptr_cast_type)jEnvPrime;
+
+	DdNode* sysIni = (DdNode*)(intptr_cast_type)jsysIni;
+	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
+	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
+	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
+
+	DdNode* prevZ = (DdNode*)(intptr_cast_type)jPrevZ;
+
+	int sysTransListSize = (int)(*env)->GetArrayLength(env, jsysTransList);
+	int envTransListSize = (int)(*env)->GetArrayLength(env, jenvTransList);
+	int sysQuantSetsSize = (int)(*env)->GetArrayLength(env, jsysQuantSets);
+	int envQuantSetsSize = (int)(*env)->GetArrayLength(env, jenvQuantSets);
+	//printf("sysTransListSize = %d\n", sysTransListSize);
+	//printf("envTransListSize = %d\n", envTransListSize);
+	//printf("sysQuantSetsSize = %d\n", sysQuantSetsSize);
+	//printf("envQuantSetsSize = %d\n", envQuantSetsSize);
+
+	if (sysTransListSize != sysQuantSetsSize || envTransListSize != envQuantSetsSize) {
+		//printf("TransListSize != QuantSetsSize (for sys or env)\n");
+		fflush(stdout);
+		UNLOCK
+			return -1;
+	}
+
+	if (sysTransListSize == 0 || envTransListSize == 0) {
+		//printf("not given trans-quantsets lists, will use original control\n");
+		sys_trans_quant_list.isInit = false;
+		env_trans_quant_list.isInit = false;
+	}
+	else {
+		//printf("given trans-quantsets lists, will use the decomposition control\n");
+		sys_trans_quant_list.isInit = true;
+		sys_trans_quant_list.listSize = sysTransListSize;
+		sys_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysTransList, NULL);
+		sys_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jsysQuantSets, NULL);
+
+		env_trans_quant_list.isInit = true;
+		env_trans_quant_list.listSize = envTransListSize;
+		env_trans_quant_list.transList = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvTransList, NULL);
+		env_trans_quant_list.quantSets = (DdNode**)(intptr_cast_type*)(*env)->GetPrimitiveArrayCritical(env, jenvQuantSets, NULL);
+
+		if (sys_trans_quant_list.transList == NULL || sys_trans_quant_list.quantSets == NULL ||
+			env_trans_quant_list.transList == NULL || env_trans_quant_list.quantSets == NULL) {
+			//printf("sys_trans_quant_list or env_trans_quant_list is NULL\n");
+			fflush(stdout);
+			UNLOCK
+				return -1;
+		}
+	}
+
+	free_rabin_mem();
+
+	int result = rabin_game_evolution_aware(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, prevZ);
+
+	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
+	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
+	if (sys_trans_quant_list.isInit) {
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysTransList, sys_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvTransList, env_trans_quant_list.transList, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jsysQuantSets, sys_trans_quant_list.quantSets, JNI_ABORT);
+		(*env)->ReleasePrimitiveArrayCritical(env, jenvQuantSets, env_trans_quant_list.quantSets, JNI_ABORT);
+	}
+	fflush(stdout);
+	UNLOCK
+
+		return (jboolean)result;
+}
+
 JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 (JNIEnv *env, jclass cl, jlongArray jSysJ, jlongArray jEnvJ,
 	jlong jsysIni, jlong jenvIni, jlong jSysTrans, jlong jEnvTrans,
 	jlong jsysUnprime, jlong jenvUnprime, jlong jSysPrime, jlong jEnvPrime,
-	jlong jPairs, jboolean efp, jboolean eun, jboolean fpr, jboolean sca,
+	jlong jPairs, jint optimizations,
 	jint inc_bitmap, jlong inc_start_z, jlongArray inc_z_mem, jlongArray inc_x_mem,
-	jint jIdx, jint inc_sizeD1, jint inc_sizeD2, jintArray inc_sizeD3)
+	jint jIdx, jint inc_sizeD1, jint inc_sizeD2, jintArray inc_sizeD3, jlong jInitialY)
 {
 	LOCK
 	int sysJSize = (int)(*env)->GetArrayLength(env, jSysJ);
@@ -4146,6 +4397,8 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 	DdNode* envIni = (DdNode*)(intptr_cast_type)jenvIni;
 	DdNode* sysUnprime = (DdNode*)(intptr_cast_type)jsysUnprime;
 	DdNode* envUnprime = (DdNode*)(intptr_cast_type)jenvUnprime;
+
+	DdNode* initialY = (DdNode*)(intptr_cast_type)jInitialY;
 
 	free_rabin_mem();
 
@@ -4231,7 +4484,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 	}
 
 	int result = rabin_game_inc(sysJ, sysJSize, envJ, envJSize, sysIni, envIni, sysTrans, envTrans,
-		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, efp, eun, fpr, sca, true, inc_data);
+		sysUnprime, envUnprime, sysPrimeVars, envPrimeVars, pairs, optimizations, true, inc_data, initialY, false, NULL);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, jSysJ, sysJ, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, jEnvJ, envJ, JNI_ABORT);
@@ -4262,6 +4515,8 @@ JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_rabinGameInc0
 
 	return (jboolean)result;
 }
+
+
 
 JNIEXPORT jboolean JNICALL Java_net_sf_javabdd_CUDDFactory_vacuity0
 (JNIEnv* env, jclass cl, jlongArray jJust,

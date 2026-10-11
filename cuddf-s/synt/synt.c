@@ -34,10 +34,39 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <time.h> 
 
-sizeD1 = 0;
-sizeD2 = 0;
+int sizeD1 = 0;
+int sizeD2 = 0;
 
+struct gr1Mem gr1_mem;
+struct gr1StarMem gr1_star_mem;
+struct rabinMem rabin_mem;
+struct transQuantList sys_trans_quant_list;
+struct transQuantList env_trans_quant_list;
+struct existSfaGarList exist_gars_list;
 
+/**
+ * A helper function that is the equivalent of Cudd_bddAndAbstract, but for the OR operation with universal abstraction.
+ */
+DdNode* helperBddOrUniversalAbstract(DdManager* manager, DdNode* f, DdNode* g, DdNode* varSet)
+{
+	DdNode* not_f = Cudd_Not(f);
+	Cudd_Ref(not_f);
+
+	DdNode* not_g = Cudd_Not(g);
+	Cudd_Ref(not_g);
+
+	DdNode* abstract_not_f_and_not_g = Cudd_bddAndAbstract(manager, not_f, not_g, varSet);
+	Cudd_Ref(abstract_not_f_and_not_g);
+
+	DdNode* result = Cudd_Not(abstract_not_f_and_not_g);
+	Cudd_Ref(result);
+
+	Cudd_RecursiveDeref(manager, abstract_not_f_and_not_g);
+	Cudd_RecursiveDeref(manager, not_g);
+	Cudd_RecursiveDeref(manager, not_f);
+
+	return result;
+}
 
 /*
 * Free the memory that was allocated in gr1_game
@@ -87,7 +116,7 @@ void free_gr1_mem()
 /*
 * The set of states from which the system can force the environment to reach a state in "to".
 */
-DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
+DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca, int sda)
 {
 	DdNode* statesSysTransTo;
 
@@ -108,21 +137,30 @@ DdNode* yield_orig(DdNode* toPrime, DdNode* sysPrimeVars, DdNode* envPrimeVars, 
 
 	DdNode* illegalEnvTrans = Cudd_Not(envTrans);
 	Cudd_Ref(illegalEnvTrans);
-	DdNode* illegalTransOrStatesSysTransTo = Cudd_bddOr(manager, illegalEnvTrans, statesSysTransTo);
-	Cudd_Ref(illegalTransOrStatesSysTransTo);
-	Cudd_RecursiveDeref(manager, illegalEnvTrans);
 
-	DdNode* yieldStates = Cudd_bddUnivAbstract(manager, illegalTransOrStatesSysTransTo, envPrimeVars);
-	Cudd_Ref(yieldStates);
+	DdNode* yieldStates;
+
+	if (sda) {
+		yieldStates = helperBddOrUniversalAbstract(manager, illegalEnvTrans, statesSysTransTo, envPrimeVars);
+	}
+	else {
+		DdNode* illegalTransOrStatesSysTransTo = Cudd_bddOr(manager, illegalEnvTrans, statesSysTransTo);
+		Cudd_Ref(illegalTransOrStatesSysTransTo);
+
+		yieldStates = Cudd_bddUnivAbstract(manager, illegalTransOrStatesSysTransTo, envPrimeVars);
+		Cudd_Ref(yieldStates);
+
+		Cudd_RecursiveDeref(manager, illegalTransOrStatesSysTransTo);
+	}
 
 	Cudd_RecursiveDeref(manager, toPrime);
 	Cudd_RecursiveDeref(manager, statesSysTransTo);
-	Cudd_RecursiveDeref(manager, illegalTransOrStatesSysTransTo);
+	Cudd_RecursiveDeref(manager, illegalEnvTrans);
 
 	return yieldStates;
 }
 
-DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca)
+DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairing* pairs, DdNode* sysTrans, DdNode* envTrans, int sca, int sda)
 {
 	int n;
 	unsigned int* arr;
@@ -143,7 +181,7 @@ DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairin
 	free(arr);
 
 	if (!sys_trans_quant_list.isInit || !env_trans_quant_list.isInit) {
-		return yield_orig(toPrime, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca);
+		return yield_orig(toPrime, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans, sca, sda);
 	}
 
 	////printf("using yield with transQuantList\n");
@@ -189,14 +227,22 @@ DdNode* yield(DdNode* to, DdNode* sysPrimeVars, DdNode* envPrimeVars, CuddPairin
 		DdNode* illegalEnvTrans = Cudd_Not(env_trans_quant_list.transList[i]);
 		Cudd_Ref(illegalEnvTrans);
 
-		DdNode* transImpYield = Cudd_bddOr(manager, illegalEnvTrans, yieldStates);
-		Cudd_Ref(transImpYield);
-		Cudd_RecursiveDeref(manager, illegalEnvTrans);
-		Cudd_RecursiveDeref(manager, yieldStates);
+		if (sda) {
+			DdNode* tmp = yieldStates;
+			yieldStates = helperBddOrUniversalAbstract(manager, illegalEnvTrans, yieldStates, env_trans_quant_list.quantSets[i]);
+			Cudd_RecursiveDeref(manager, tmp);
+		}
+		else {
+			DdNode* transImpYield = Cudd_bddOr(manager, illegalEnvTrans, yieldStates);
+			Cudd_Ref(transImpYield);
+			Cudd_RecursiveDeref(manager, yieldStates);
 
-		yieldStates = Cudd_bddUnivAbstract(manager, transImpYield, env_trans_quant_list.quantSets[i]);
-		Cudd_Ref(yieldStates);
-		Cudd_RecursiveDeref(manager, transImpYield);
+			yieldStates = Cudd_bddUnivAbstract(manager, transImpYield, env_trans_quant_list.quantSets[i]);
+			Cudd_Ref(yieldStates);
+			Cudd_RecursiveDeref(manager, transImpYield);
+		}
+
+		Cudd_RecursiveDeref(manager, illegalEnvTrans);
 	}
 
 	//DdNode* yieldStates2 = yield2(to, sysPrimeVars, envPrimeVars, pairs, sysTrans, envTrans);

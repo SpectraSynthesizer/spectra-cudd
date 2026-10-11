@@ -28,6 +28,9 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "jitcontroller.h"
 
+DdNode* transitions;
+DdNode* initial;
+
 // Since CuddPairing is symmetric (a->b means b->a in the list) prime and unprime are the same
 DdNode* unprime(DdNode* bdd, CuddPairing* pairs) {
 	return prime(bdd, pairs);
